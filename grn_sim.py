@@ -91,13 +91,14 @@ def langevin(m1, m2, h1, h2, tau, driver_idxs, alphas, betas, ks, hs, vtaus,
     uArr    = np.zeros((nt_saves, u.shape[0], nc_save))
     vArr    = np.zeros((nt_saves, v.shape[0], nc_save))
 
-    t        = 0
-    save_idx = 0 #1
-    eps      = dt / 1e7
-
-    while t<tmax:
+    save_idx = 0
+    niter      = int(np.ceil(tmax / dt))
+    nsave_iter = int(np.around(dt_save/dt))
+    
+    for i in range(niter) : 
         
-        if t % dt_save < eps: 
+        if i % nsave_iter == 0: 
+#            print('t = {0}'.format(i*dt))
             uArr[save_idx] = u[:,0:nc_save]
             vArr[save_idx] = v[:,0:nc_save]
             save_idx += 1
@@ -106,7 +107,5 @@ def langevin(m1, m2, h1, h2, tau, driver_idxs, alphas, betas, ks, hs, vtaus,
         v = v*(v>0) # expression can't be negative (i.e., gene goes extinct)
         u = step(u, dt, m1, m2, h1, h2, tau, ncells, scale)
         u = u*(u>0)
-        
-        t += dt
 
     return(tArr, uArr, vArr, u, v)

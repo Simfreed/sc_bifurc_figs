@@ -23,8 +23,9 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
 import myfun as mf
 import sys
 import os
-sys.path.append('/Users/simonfreedman/cqub/bifurc/weinreb_2020/python/')
-sys.path.append('/Users/simonfreedman/cqub/bifurc_gh/toy/python/')
+import copy
+#sys.path.append('/Users/simonfreedman/cqub/bifurc/weinreb_2020/python/')
+#sys.path.append('/Users/simonfreedman/cqub/bifurc_gh/toy/python/')
 
 
 from matplotlib import rc
@@ -42,15 +43,17 @@ os.environ["PATH"] += os.pathsep + '/usr/local/texlive/2018/bin/x86_64-darwin'
 
 ###### load stuff #######
 datdir  = 'sn1'
-a1s       = np.load('{0}/a1s.npy'.format(datdir))
+m2 = 3
+m1s       = np.load('{0}/m1s.npy'.format(datdir))
 gexp      = np.load('{0}/gexp.npy'.format(datdir))
 alphas    = np.load('{0}/alphas.npy'.format(datdir))
-drv_idxs  = np.load('{0}/driver_idxs.npy'.format(datdir))
+drv_idxs  = np.load('{0}/driv_idxs.npy'.format(datdir))
 
-#mtraj      = np.load('{0}/mtraj.npy'.format(datdir))
+dtraj     = np.load('tc_traj/dtraj.npy'.format(datdir))
+print(dtraj.shape)
 
 #######trajectory processing #######
-na1, ncells, ngenes = gexp.shape
+nm1, ncells, ngenes = gexp.shape
 nresp = alphas.shape[0]
 
 nidxs = np.where(alphas<0.5)[0]
@@ -74,14 +77,14 @@ gexps        = np.array([gexp]) # this is because of the pitchfork clustering
 gexps_mu     = np.mean(gexps,axis=2)
 gexps_cent   = (gexps.transpose((2,0,1,3))-gexps_mu).transpose((1,2,0,3))
 sds          = np.std(gexps_cent, axis=2, ddof=1)
-covs         = np.array([[np.cov(gexps_cent[i,t].T) for t in range(na1)] for i in range(gexps.shape[0])])
+covs         = np.array([[np.cov(gexps_cent[i,t].T) for t in range(nm1)] for i in range(gexps.shape[0])])
 
-cov_eig    = [[np.linalg.eig(cov[t]) for t in np.arange(na1)] for cov in covs]
-cov_evals  = np.array([[cov_eig[i][t][0] for t in np.arange(na1)] for i in range(len(covs))])
-cov_evecs  = np.array([[cov_eig[i][t][1] for t in np.arange(na1)] for i in range(len(covs))])
+cov_eig    = [[np.linalg.eig(cov[t]) for t in np.arange(nm1)] for cov in covs]
+cov_evals  = np.array([[cov_eig[i][t][0] for t in np.arange(nm1)] for i in range(len(covs))])
+cov_evecs  = np.array([[cov_eig[i][t][1] for t in np.arange(nm1)] for i in range(len(covs))])
 
 cov_evec0      = cov_evecs[...,0]
-cov_evec0_sign = nz_sign(mf.maxabs(cov_evec0,axis=2))
+cov_evec0_sign = mf.nz_sign(mf.maxabs(cov_evec0,axis=2))
 cov_evec0_ns   = np.real_if_close((cov_evec0.transpose((2,0,1)) * cov_evec0_sign).transpose((1,2,0)))
 
 ##### bifurcation pseudotime ######
@@ -124,22 +127,22 @@ cos_th_bin_ctrs = 0.5*(cos_th_bins[1:]+cos_th_bins[:-1])
 
 # there's def a bunch of extra unused code here....
 dxdotdx = -1
-dxdotdy = lambda a1,y: -2*a1*y/((1+y*y)**2)
+dxdotdy = lambda m1,y: -2*m1*y/((1+y*y)**2)
 dydotdy = -1
-dydotdx = lambda a2,x: dxdotdy(a2,x)
+dydotdx = lambda m2,x: dxdotdy(m2,x)
 dvdotdr = lambda alpha, r: 2*r*(2*alpha-1)/((1+r*r)**2)
 
-jac_a1 = np.zeros((na1, ncells, ngenes, ngenes))
+jac_m1 = np.zeros((nm1, ncells, ngenes, ngenes))
 for i in range(ngenes):
-    jac_a1[:,:,i,i]=-1
+    jac_m1[:,:,i,i]=-1
 
-jac_a1[:,:,0,1]   = dxdotdy(a1s,gexps[0,:,:,1].T).T
-jac_a1[:,:,1,0]   = dxdotdy(a2,gexps[0,:,:,0])
+jac_m1[:,:,0,1]   = dxdotdy(m1s,gexps[0,:,:,1].T).T
+jac_m1[:,:,1,0]   = dxdotdy(m2,gexps[0,:,:,0])
 
 for i in range(nresp):
-    jac_a1[:,:,i+2,drv_idxs[i]] = dvdotdr(alphas[i],gexps[0,:,:,drv_idxs[i]])
+    jac_m1[:,:,i+2,drv_idxs[i]] = dvdotdr(alphas[i],gexps[0,:,:,drv_idxs[i]])
 
-jac_bif_evals, jac_bif_evecs      = np.linalg.eig(jac_a1)
+jac_bif_evals, jac_bif_evecs      = np.linalg.eig(jac_m1)
 jac_eig_max_idxs                  = np.argmax(jac_bif_evals,axis=2)
 jac_max_eval     = np.max(jac_bif_evals,axis=2)
 mu_jac_max_eval  = np.mean(jac_max_eval,axis=1)
@@ -154,21 +157,21 @@ errsn         = np.linalg.norm(-jac_evec0.transpose((1,0,2))-cov_evec0_ns[0],axi
 jac_evec0_sgn = (np.argmin(np.array([errsn,errsp]),axis=0)*2-1).T
 jac_evec0_ns  = ((jac_evec0.transpose((2,0,1))) * jac_evec0_sgn).transpose((1,2,0))
 
-jac_a1_muexp = np.zeros((na1, ngenes, ngenes))
+jac_m1_muexp = np.zeros((nm1, ngenes, ngenes))
 for i in range(ngenes):
-    jac_a1_muexp[:,i,i]=-1
+    jac_m1_muexp[:,i,i]=-1
 
-jac_a1_muexp[:,0,1]   = dxdotdy(a1s,gexps_mu[0,:,1].T).T
-jac_a1_muexp[:,1,0]   = dxdotdy(a2,gexps_mu[0,:,0])
+jac_m1_muexp[:,0,1]   = dxdotdy(m1s,gexps_mu[0,:,1].T).T
+jac_m1_muexp[:,1,0]   = dxdotdy(m2,gexps_mu[0,:,0])
 
 for i in range(nresp):
-    jac_a1_muexp[:,i+2,drv_idxs[i]]   = dvdotdr(alphas[i],gexps_mu[0,:,drv_idxs[i]])
+    jac_m1_muexp[:,i+2,drv_idxs[i]]   = dvdotdr(alphas[i],gexps_mu[0,:,drv_idxs[i]])
 
-jac_muexp_evals, jac_muexp_evecs      = np.linalg.eig(jac_a1_muexp)
+jac_muexp_evals, jac_muexp_evecs      = np.linalg.eig(jac_m1_muexp)
 jac_muexp_maxeval_idxs                = np.argmax(jac_muexp_evals,axis=1)
 jac_muexp_maxevals                    = np.max(jac_muexp_evals,axis=1)
 
-jac_muexp_evec0     = np.array([jac_muexp_evecs[i,:,jac_muexp_maxeval_idxs[i]] for i in np.arange(na1)])
+jac_muexp_evec0     = np.array([jac_muexp_evecs[i,:,jac_muexp_maxeval_idxs[i]] for i in np.arange(nm1)])
 
 errsp               = np.linalg.norm( jac_muexp_evec0-cov_evec0_ns[0],axis=1)
 errsn               = np.linalg.norm(-jac_muexp_evec0-cov_evec0_ns[0],axis=1)
@@ -183,7 +186,7 @@ jac_evec_err = np.linalg.norm(jac_muexp_evec0_ns - cov_evec0_ns[0],axis=1)
 xasrt = np.argsort(alphas[xidxs])
 yasrt = np.argsort(alphas[yidxs])
 
-sd_sd = np.array([np.outer(sds[0,i],sds[0,i]) for i in range(na1)])
+sd_sd = np.array([np.outer(sds[0,i],sds[0,i]) for i in range(nm1)])
 corrs = covs[0] / sd_sd
 
 xcorrs = corrs[:,0,xidxs[xasrt]+2]
@@ -229,12 +232,12 @@ gexp_mu_sort = np.vstack([gexp_mut[[0]],
                           gexp_mut[[1]]
                          ])
 
-gexp_mu_sort_norm = norm0to1(gexp_mu_sort,1)
+gexp_mu_sort_norm = mf.norm0to1(gexp_mu_sort,1)
 
-gexp_mu_sort2 = np.vstack([norm0to1(gexp_mut[[0]],1),
+gexp_mu_sort2 = np.vstack([mf.norm0to1(gexp_mut[[0]],1),
                           gexp_mut[l2h_idxs[np.flip(l2h_asrt)]+2],
                           gexp_mut[h2l_idxs[h2l_asrt]+2],
-                          norm0to1(gexp_mut[[1]],1)
+                          mf.norm0to1(gexp_mut[[1]],1)
                          ])
 
 #######################################################
@@ -330,7 +333,6 @@ axG  = plt.subplot( gs[rs[14]:      , cs[0]:cs[1]]) # correlation
 #axHL = plt.subplot( gs[rs[10]:rs[11], cs[2]:]) # corr distr legend
 axH  = plt.subplot( gs[rs[12]:      , cs[2]:]) # cirr distr
 
-capd_axs = [axA,axB,axCL,axD,axE,axF1,axGL,axHL]
 caps = [
      'A',   'B',  'C',  'D', 'E',  'F',   'G',   'H']
 ri = [rs[0],rs[4],rs[0],rs[6],rs[8],rs[10],rs[12],rs[12]]
@@ -338,7 +340,7 @@ ci = [0,    0,    cs[1],0,    0,    0,     0,     cs[1]]
 xs = [0,    0,    2.5,    0,    0,    0,     0,     2]
 ys = [0,   -1,    0,   -1,    2,    0,     0,     0]
 
-for i in range(len(capd_axs)):
+for i in range(len(caps)):
     cap_ax=plt.subplot(gs[ri[i]:ri[i]+1,ci[i]:ci[i]+1])
     cap_ax.text(s=caps[i], x=xs[i], y=ys[i],fontsize=14, fontweight='bold')
     cap_ax.axis('off')
@@ -389,17 +391,15 @@ axA.axis('off')
 #####################################
 ## B: steady state distributions   ##
 #####################################
-a1_ii = [0, bi, -1]
-
-bifvarlab = r'$m_1$'
-
-idxs = np.unique(np.logspace(0,np.log10(mtraj.shape[1]),25,dtype='int')-1)
+traj_m1 = [2,3,4]
 cols = ['b','goldenrod','r']
-tss = -3000
-for i in range(len(ts)):
-    axB.hist(mtraj[a1_ii[i],tss:,0].reshape(-1),color=cols[i],histtype='step',lw=2,bins=np.linspace(-0.1,5.5,20),
-             density=True,alpha=0.8,label = r'$m_1=$${0:.0f}$'.format(a1s[a1_ii[i]]))
-#     axB.set_yscale('symlog')
+bifvarlab = r'$m_1$'
+tss = -500
+for i in range(len(traj_m1)):
+    axB.hist(dtraj[i,tss:,0].reshape(-1),color=cols[i],histtype='step',lw=2,bins=np.linspace(-0.1,5.5,20),
+             density=True,alpha=0.8,label = r'$m_1=$${0:.0f}$'.format(traj_m1[i]))
+    
+axB.set_yscale('symlog')
 
 leg = axB.legend(loc=(0.25,0.4),labelspacing=0,handletextpad=0.5,
                  handlelength=1,frameon=False, borderpad=0)
@@ -415,8 +415,8 @@ axB.set_xticks(np.arange(0,7,2))
 #####################################
 im = axC.imshow(gexp_mu_sort2,aspect='auto')
 
-axC.set_xticks(np.arange(na1))
-axC.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in a1s])
+axC.set_xticks(np.arange(nm1))
+axC.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in m1s])
 
 axC.set_xlabel(bifvarlab)
 axC.set_ylabel('gene index')
@@ -427,8 +427,8 @@ cbar.set_label(r'$\langle$gene expression$\rangle$',rotation=0,labelpad=2)
 axCL.xaxis.set_label_position('top')
 
 
-da1            = np.mean(np.diff(a1s))
-taulims        = [np.min(a1s)-da1,np.max(a1s)+da1]
+dm1            = np.mean(np.diff(m1s))
+taulims        = [np.min(m1s)-dm1,np.max(m1s)+dm1]
 costh_tau_lims = [-1,cos_th_hist.shape[1]]
 
 
@@ -436,14 +436,14 @@ costh_tau_lims = [-1,cos_th_hist.shape[1]]
 ## D: covariance eigenvalue         ##
 #####################################
 cols = ['k','gray']
-axD.plot(a1s, np.real(cov_evals[0,:,0]),'o-', color=cols[0],fillstyle='none', label=r'data ($\omega_1$)')
+axD.plot(m1s, np.real(cov_evals[0,:,0]),'o-', color=cols[0],fillstyle='none', label=r'data ($\omega_1$)')
 axD.set_ylabel(r'$\omega_1$')
 axD.set_ylabel(r'cov. eval. 1')
 
 axD.set_xticklabels([])
 axD.set_yticks(np.arange(0,7,2))
 axD.set_xlim(*taulims)
-axD.errorbar(a1s, null_eval_mu[:,0], yerr = null_eval_err[:,0], color=cols[1],
+axD.errorbar(m1s, null_eval_mu[:,0], yerr = null_eval_err[:,0], color=cols[1],
              capsize=2,alpha=0.5, label='shuffled expr.\n'+r'($\omega_1^{\rm null}$)')
 leg = axD.legend(loc = (0.1,0.4),labelspacing=0,frameon=False,ncol=2,columnspacing=4.5,
                  handlelength=0.5,handletextpad=0.2)
@@ -463,7 +463,7 @@ axE.set_yticks(np.arange(cos_th_hist.shape[0]))
 axE.set_yticklabels(['{0:.1f}'.format(cos_th_bin_ctrs[i]) if i%2==0 else ''
                       for i in range(len(cos_th_bin_ctrs)-1,-1,-1)])
 axE.set_xticklabels([])
-axE.axvline(bi,color='k', linestyle = '--', alpha=0.5)
+axE.axvline(bif_idxs[0],color='k', linestyle = '--', alpha=0.5)
 axE.set_xlim(*costh_tau_lims)
 
 cbar = fig.colorbar(im, cax=axEL, orientation='vertical', aspect=1)
@@ -476,7 +476,7 @@ axEL.yaxis.set_ticks([2,4,6,8])
 #####################################
 
 axcols = ['r','b']
-axF1.errorbar(a1s,mu_jac_max_eval, yerr=std_jac_max_eval, capsize=5, color=axcols[0],
+axF1.errorbar(m1s,mu_jac_max_eval, yerr=std_jac_max_eval, capsize=5, color=axcols[0],
               marker='s', fillstyle='none', label=r'$\lambda_d$')
 axF1.set_ylabel('max jac. eval.', color=axcols[0])#, labelpad=0)
 axF1.tick_params(axis='y', labelcolor=axcols[0])
@@ -487,14 +487,14 @@ axF1.set_xlim(*taulims)
 
 axF1.set_xlabel(bifvarlab)
 axF1.set_xlabel('control parameter ({0})'.format(bifvarlab))
-axF1.axvline(a1s[bi],color='k', linestyle = '--', alpha=0.5)
+axF1.axvline(m1s[bif_idxs[0]],color='k', linestyle = '--', alpha=0.5)
 leg = axF1.legend(loc=(0.15,0),frameon=False,handlelength=1,handletextpad=0.5)
 for text in leg.get_texts():
     text.set_color(axcols[0])
 
 #jacobian eigenvector error
 axF2=axF1.twinx()
-axF2.plot(a1s, jac_evec_err, 'o-',fillstyle='none',color=axcols[1],label=r'$||\vec{p}^d-\vec{s}^1||$')
+axF2.plot(m1s, jac_evec_err, 'o-',fillstyle='none',color=axcols[1],label=r'$||\vec{p}^d-\vec{s}^1||$')
 axF2.set_ylabel('jac. evec. err.',rotation=270,labelpad=10,color=axcols[1])
 axF2.tick_params(axis='y', labelcolor=axcols[1])
 axF2.spines['left'].set_color(axcols[0])
@@ -511,12 +511,12 @@ for text in leg.get_texts():
 # correlation distribution plot
 corr_hist_masked = np.ma.masked_where(corr_hists == 0, corr_hists)
 im = axG.imshow(corr_hist_masked.T,aspect='auto')
-axG.set_xticks(np.arange(na1))
-axG.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in a1s])
+axG.set_xticks(np.arange(nm1))
+axG.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in m1s])
 
 axG.set_xlabel(bifvarlab)
 axG.set_ylabel(r'corr. coeff. ($R_{ij}$)')
-axG.axvline(bi,color='k', linestyle = '--', alpha=0.5)
+axG.axvline(bif_idxs[0],color='k', linestyle = '--', alpha=0.5)
 
 axG.set_yticks(np.arange(corr_hists.shape[1]))
 axG.set_yticklabels(['{0:.1f}'.format(corr_bin_ctrs[i]) if i%3==0 else ''
@@ -532,9 +532,10 @@ axGL.xaxis.set_label_position('top')
 #####################################
 
 cols = ['b','goldenrod','r']
-for i in range(len(ts)):
-    axH.plot(alphas[asrt],corrsxy[2][a1_ii[i]],'o',color=cols[i],
-             label = bifvarlab+r'$={0:.0f}$'.format(a1s[a1_ii[i]]))
+m1_ii = [0,bif_idxs[0], -1]
+for i in range(len(m1_ii)):
+    axH.plot(alphas[asrt],corrsxy[2][m1_ii[i]],'o',color=cols[i],
+             label = bifvarlab+r'$={0:.0f}$'.format(m1s[m1_ii[i]]))
 
 leg = axH.legend(loc=(-0.15,0.6),labelspacing=0,handletextpad=-0.8,
                  frameon=False)
@@ -547,5 +548,6 @@ axH.set_ylabel(r'driver corr. ($R_{i,d(i)}$)')
 axH.set_yticks(np.arange(-0.9,1,0.3))
 axH.set_xticks(np.arange(0,1.2,0.5))
 
+figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
 plt.savefig('{0}/fig3_tc_grn.pdf'.format(figdir), bbox_inches='tight')
