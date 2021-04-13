@@ -1,44 +1,20 @@
 import numpy as np
-from importlib import reload
-import scipy
-from scipy import linalg
 from sklearn.decomposition import PCA
-from scipy.stats import pearsonr as pcc
-from scipy.optimize import minimize
-
-import matplotlib as mpl
-from matplotlib.colors import LogNorm
-
-
-from matplotlib import colors, ticker, gridspec, rc, transforms
-from matplotlib.ticker import PercentFormatter, LogFormatter, FuncFormatter, LogLocator, AutoMinorLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from collections import Counter, OrderedDict
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-                               AutoMinorLocator)
-
-
 import myfun as mf
-import sys
 import os
 import copy
-#sys.path.append('/Users/simonfreedman/cqub/bifurc/weinreb_2020/python/')
-#sys.path.append('/Users/simonfreedman/cqub/bifurc_gh/toy/python/')
 
-
-from matplotlib import rc
+import matplotlib as mpl
+from matplotlib import rc, gridspec
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 rc('font', **{'family':'serif','serif':['Palatino']})
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 
-#matplotlib.use('agg')
 rc('text',usetex=True)
-#rc('text.latex', preamble=r'\usepackage{color}') -- this line screws up matplotlib legends
 rc('text.latex', preamble=r'\usepackage{amssymb}') 
 
-os.environ["PATH"] += os.pathsep + '/usr/local/texlive/2018/bin/x86_64-darwin'
 
 
 ###### load stuff #######
@@ -50,7 +26,6 @@ alphas    = np.load('{0}/alphas.npy'.format(datdir))
 drv_idxs  = np.load('{0}/driv_idxs.npy'.format(datdir))
 
 dtraj     = np.load('tc_traj/dtraj.npy'.format(datdir))
-print(dtraj.shape)
 
 #######trajectory processing #######
 nm1, ncells, ngenes = gexp.shape
@@ -66,7 +41,6 @@ xnidxs = np.intersect1d(nidxs, xidxs)
 xpidxs = np.intersect1d(pidxs, xidxs)
 ynidxs = np.intersect1d(nidxs, yidxs)
 ypidxs = np.intersect1d(pidxs, yidxs)
-
 
 gexp_mu  = np.mean(gexp,axis=1)
 gexp_qi  = np.quantile(gexp,axis=1,q=[0.025,0.975])
@@ -176,9 +150,9 @@ jac_muexp_evec0     = np.array([jac_muexp_evecs[i,:,jac_muexp_maxeval_idxs[i]] f
 errsp               = np.linalg.norm( jac_muexp_evec0-cov_evec0_ns[0],axis=1)
 errsn               = np.linalg.norm(-jac_muexp_evec0-cov_evec0_ns[0],axis=1)
 jac_muexp_evec0_sgn = (np.argmin(np.array([errsn,errsp]),axis=0)*2-1)
-jac_muexp_evec0_ns  = ((jac_muexp_evec0.T) * jac_muexp_evec0_sgn).T
 
-jac_evec_err = np.linalg.norm(jac_muexp_evec0_ns - cov_evec0_ns[0],axis=1)
+jac_muexp_evec0_ns  = ((jac_muexp_evec0.T) * jac_muexp_evec0_sgn).T
+jac_evec_err        = np.linalg.norm(jac_muexp_evec0_ns - cov_evec0_ns[0],axis=1)
 
 ##########################################################
 ############### gene sorting by alpha ####################
