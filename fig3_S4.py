@@ -525,3 +525,102 @@ axH.set_xticks(np.arange(0,1.2,0.5))
 figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
 plt.savefig('{0}/fig3_tc_grn.pdf'.format(figdir), bbox_inches='tight')
+
+
+############################################
+########### Fig S4-- resampling evec #######
+############################################
+# evals and evecs of shuffled data
+np.random.seed(3)
+npc = 2
+pca = PCA(n_components=npc)
+nt,nc,ng = gexp.shape
+gexp_shuf       = np.zeros_like(gexp)
+gexp_shuf_evecs = np.zeros((nt, npc, ng))
+gexp_shuf_evals = np.zeros((nt, npc))
+
+for t in range(nt):
+    gexpt = gexp[t]
+    gexp_shuf[t] = np.array([gexpt[:,g][np.random.choice(nc, nc, replace=True)] for g in range(ng)]).T
+    pca.fit(gexp_shuf[t])
+    gexp_shuf_evals[t]=pca.explained_variance_
+    gexp_shuf_evecs[t]=pca.components_
+
+gexp_shuf_mu = np.mean(gexp_shuf,axis=1)
+
+# evec position
+th = np.arctan2(gexp_shuf_evecs[:,0,1],gexp_shuf_evecs[:,0,0])
+dx = gexp_shuf_evals[:,0]*np.cos(th)
+dy = gexp_shuf_evals[:,0]*np.sin(th)
+shuf_evec_xs = np.vstack([gexp_shuf_mu[:,0]-dx/2, gexp_shuf_mu[:,0]+dx/2]).T
+shuf_evec_ys = np.vstack([gexp_shuf_mu[:,1]-dy/2, gexp_shuf_mu[:,1]+dy/2]).T
+
+shuf_evec_st = np.vstack([shuf_evec_xs[:,0], shuf_evec_ys[:,0]]).T
+shuf_evec_dr = np.vstack([dx, dy]).T
+shuf_evec_fi = shuf_evec_st + shuf_evec_dr
+
+th = np.arctan2(np.real(cov_evec0[0,:,1]),np.real(cov_evec0[0,:,0]))
+dx = np.real(cov_evals[0,:,0])*np.cos(th)
+dy = np.real(cov_evals[0,:,0])*np.sin(th)
+dat_evec_xs = np.vstack([gexp_mu[:,0]-dx/2, gexp_mu[:,0]+dx/2]).T
+dat_evec_ys = np.vstack([gexp_mu[:,1]-dy/2, gexp_mu[:,1]+dy/2]).T
+
+dat_evec_st = np.vstack([dat_evec_xs[:,0], dat_evec_ys[:,0]]).T
+dat_evec_dr = np.vstack([dx, dy]).T
+dat_evec_fi = dat_evec_st + dat_evec_dr
+
+# make the figure
+
+wid = 8.7/2.54
+ht  = wid/2
+
+fig,axs=plt.subplots(2,3,figsize=(wid,ht),dpi=200)
+ts = [0,bif_idxs[0],-1]
+xmin = -1.2
+xmax = 5.4
+ymin = -0.9
+ymax = 4.5
+
+arstls = ['|-|','|-|','|-|']
+
+for i in range(3):
+
+
+
+    axs[0,i].plot(gexp[ts[i],:,0],gexp[ts[i],:,1],'ro',markersize=1,zorder=0)
+    axs[1,i].plot(gexp_shuf[ts[i],:,0],gexp_shuf[ts[i],:,1],'ro',markersize=1, zorder=0)
+
+    axs[0,i].add_artist(patches.FancyArrowPatch(dat_evec_fi[ts[i]], dat_evec_st[ts[i]],
+                                               arrowstyle=arstls[i], mutation_scale=1,zorder=2,
+                                                shrinkA=0,shrinkB=0))
+    axs[1,i].add_artist(patches.FancyArrowPatch(shuf_evec_st[ts[i]], shuf_evec_fi[ts[i]],
+                                               arrowstyle=arstls[i], mutation_scale=1, zorder=2,
+                                                shrinkA=0,shrinkB=0))
+    axs[0,i].plot(dat_evec_xs[ts[i]],dat_evec_ys[ts[i]],'b-',alpha=1,zorder=1)
+    axs[0,i].set_title(bifvarlab+r'$=${0:.0f}'.format(m1s[ts[i]]))
+    
+    for j in range(2):
+        axs[j,i].set_xticks([0,2,4])
+        axs[j,i].set_yticks([0,2,4])
+        axs[j,i].set_xlim([xmin,xmax])
+        axs[j,i].set_ylim([ymin,ymax])
+
+        if j==0:
+            axs[j,i].set_xticklabels([])
+
+        if i > 0:
+            axs[j,i].set_yticklabels([])
+
+plt.subplots_adjust(wspace=0,hspace=0)
+axs[1,1].set_xlabel(r'$g_1$')
+axs[1,0].set_ylabel(r'$g_2$')
+axs[1,0].yaxis.set_label_coords(-0.15,1)
+
+
+axs[0,2].set_ylabel('data',rotation=270,labelpad=7)
+axs[0,2].yaxis.set_label_position("right")
+
+axs[1,2].set_ylabel('null sample',rotation=270,labelpad=7)
+axs[1,2].yaxis.set_label_position("right")
+
+plt.savefig('{0}/figS4_resample.pdf'.format(figdir), bbox_inches='tight')
