@@ -5,7 +5,7 @@ import pickle
 import sys
 import copy
 import myfun as mf
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
 
 import matplotlib
 from matplotlib import colors, ticker, gridspec, rc, transforms
@@ -34,20 +34,19 @@ rc('text',usetex=False)
 # gexp for myelocite genes
 
 
-headdir    = '/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
-figdir     = 'figs'
-datdir     = '{0}/data'.format(headdir)
+headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
+figdir     = '{0}/figs'.format(headdir)
+datdir     = '{0}/neutrophil_data'.format(headdir)
+eigdir     = '{0}/eig'.format(datdir)
 
-fpref      = 'GSM4185642_stateFate_inVitro_'
-gexp_fname = '{0}/in_vitro_normd_counts.npy'.format(datdir)
-pst_fname  = '{0}/stateFate_inVitro_neutrophil_pseudotime.txt'.format(datdir)
-gnm_fname  = '{0}/{1}gene_names.txt'.format(datdir,fpref)
-
+gexp_fname = '{0}/gene_expr.npz'.format(datdir)
+pst_fname  = '{0}/pseudotime.txt'.format(datdir)
+gnm_fname  = '{0}/gene_names.txt'.format(datdir)
+meta_fname = '{0}/metadata.txt'.format(datdir)
 
 # In[6]:
 
 print('loading gene expression matrix')
-gexp_fname = '{0}/in_vitro_normd_counts.npz'.format(datdir)
 gexp_sp    = scipy.sparse.load_npz(gexp_fname) # WT: 18.3 seconds
 gexp_lil   = gexp_sp.tolil() # WT: 3 min 55 seconds
 
@@ -60,8 +59,7 @@ dtp      = np.dtype([('Library Cell', np.unicode_, 16),('barcode', np.unicode_, 
                ('Cell type annotation', np.unicode_, 60),
                ('Well', np.int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
 
-metadata = np.genfromtxt('{0}/{1}metadata.txt'.format(datdir,fpref),
-                         delimiter='\t',skip_header=1, dtype=dtp)
+metadata = np.genfromtxt(meta_fname, delimiter='\t',skip_header=1, dtype=dtp)
 
 nms      = dtp.names
 gnms     = np.genfromtxt(gnm_fname,dtype='str')
@@ -95,43 +93,38 @@ srt               = np.argsort(neut_psts[:,1])
 last_full_bin     = int(np.floor(srt.shape[0]/overlap)*overlap) - bin_sz + overlap
 neut_pst_grps     = [srt[i:(i+bin_sz)] for i in range(0,last_full_bin,overlap)]
 neut_pst_grps[-1] = np.union1d(neut_pst_grps[-1], srt[last_full_bin:])
-
-
-# In[14]:
-
-
 neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in neut_pst_grps]
 npsts             = len(neut_pst_cidxs)
-
 
 # In[15]:
 
 
-# this can be run quickly so i'll leave it here
 print('eigen-decomposition')
-pst_eig1 = np.zeros(npsts)
-pst_pc1  = np.zeros((npsts, gexp_lil.shape[1]))
-for i in range(npsts):
-    if i%100==0:
-        print('\tbin={0}'.format(i))
-    pca   = PCA(n_components=1)
-    pca.fit(gexp_lil[neut_pst_cidxs[i]].toarray())
+# this could be run quickly here, but may as well do it in the null calculator
+#pst_eig1 = np.zeros(npsts)
+#pst_pc1  = np.zeros((npsts, gexp_lil.shape[1]))
+#for i in range(npsts):
+#    if i%100==0:
+#        print('\tbin={0}'.format(i))
+#    pca   = PCA(n_components=1)
+#    pca.fit(gexp_lil[neut_pst_cidxs[i]].toarray())
+#
+#    # plain ol pca
+#    pst_eig1[i] = pca.explained_variance_[0]
+#    pst_pc1[i]  = pca.components_[0]
 
-    # plain ol pca
-    pst_eig1[i] = pca.explained_variance_[0]
-    pst_pc1[i]  = pca.components_[0]
 
+pst_eig1     = np.load('{0}/dat_eval.npy'.format(eigdir))[:,0]
+pst_pc1      = np.load('{0}/dat_evec.npy'.format(eigdir))[:,0]
 
 # In[16]:
 
-# this takes a while, so run with script: pca_gene_resample.py
-# grp_evals_null  = np.array([np.load('{0}/full_evals_null{1}.npy'.format(datdir,i)) 
-#                       for i in range(neut_grp_psts.shape[0])])
-nsamp                 = 20
-pst_grp_null_eval     = np.load('{0}/w1_gene_resample_bsz{1}_ns{2}.npy'.format(datdir,bin_sz, nsamp))
+# this takes a while, so run with script: pca_gene_resample.py -- see README.md for details
+
+#pst_grp_null_eval     = np.load('{0}/w1_gene_resample_bsz{1}_ns{2}.npy'.format(datdir, bin_sz, nsamp))
+pst_grp_null_eval     = np.array([np.load('{0}/shuf_eig_t{1}.npy'.format(eigdir,i))[:,0] for i in range(npsts)])
 pst_grp_null_eval_mu  = np.mean(pst_grp_null_eval,axis=1)
 pst_grp_null_eval_err = np.std(pst_grp_null_eval,axis=1)
-
 
 # In[17]:
 

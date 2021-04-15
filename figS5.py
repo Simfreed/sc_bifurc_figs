@@ -33,51 +33,23 @@ rc('text',usetex=False)
 # gexp for neutrophil genes
 # gexp for myelocite genes
 
+headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
+figdir     = '{0}/figs'.format(headdir)
+datdir     = '{0}/neutrophil_data'.format(headdir)
+eigdir     = '{0}/eig'.format(datdir)
+ncelldir   = '{0}/eigs_ncell_sample'.format(datdir)
 
-headdir    = '/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
-figdir     = 'figs'
-datdir     = '{0}/data'.format(headdir)
-
-fpref      = 'GSM4185642_stateFate_inVitro_'
-gexp_fname = '{0}/in_vitro_normd_counts.npy'.format(datdir)
-pst_fname  = '{0}/stateFate_inVitro_neutrophil_pseudotime.txt'.format(datdir)
-gnm_fname  = '{0}/{1}gene_names.txt'.format(datdir,fpref)
-
+gexp_fname = '{0}/gene_expr.npz'.format(datdir)
+pst_fname  = '{0}/pseudotime.txt'.format(datdir)
+gnm_fname  = '{0}/gene_names.txt'.format(datdir)
 
 # In[6]:
 
 print('loading gene expression matrix')
-gexp_fname = '{0}/in_vitro_normd_counts.npz'.format(datdir)
+gexp_fname = '{0}/gene_expr.npz'.format(datdir)
 gexp_sp    = scipy.sparse.load_npz(gexp_fname) # WT: 18.3 seconds
 gexp_lil   = gexp_sp.tolil() # WT: 3 min 55 seconds
 
-
-# In[8]:
-
-#print('loading cluster labels and SPRING positions')
-#dtp      = np.dtype([('Library Cell', np.unicode_, 16),('barcode', np.unicode_, 20),
-#              ('Time point', np.int),('Starting population', np.unicode_, 20),
-#               ('Cell type annotation', np.unicode_, 60),
-#               ('Well', np.int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
-#
-#metadata = np.genfromtxt('{0}/{1}metadata.txt'.format(datdir,fpref),
-#                         delimiter='\t',skip_header=1, dtype=dtp)
-#
-#nms      = dtp.names
-#gnms     = np.genfromtxt(gnm_fname,dtype='str')
-#
-#
-## In[9]:
-#
-#
-#keys           = metadata['Cell_type_annotation']
-#ctypes         = np.unique(keys)
-#ctype_idx_dict = dict(zip(ctypes,range(ctypes.shape[0])))
-#ctype_idxs     = np.array([ctype_idx_dict[k] for k in keys])
-#ctype_grps     = [np.where(ctype_idxs==i)[0] for i in range(len(ctypes))]
-#ctype_mean_pos = np.array([[np.mean(metadata['SPRINGx'][grp]),np.mean(metadata['SPRINGy'][grp])] 
-#                           for grp in ctype_grps])
-#
 
 # In[11]:
 
@@ -95,10 +67,6 @@ srt               = np.argsort(neut_psts[:,1])
 last_full_bin     = int(np.floor(srt.shape[0]/overlap)*overlap) - bin_sz + overlap
 neut_pst_grps     = [srt[i:(i+bin_sz)] for i in range(0,last_full_bin,overlap)]
 neut_pst_grps[-1] = np.union1d(neut_pst_grps[-1], srt[last_full_bin:])
-
-
-# In[14]:
-
 neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in neut_pst_grps]
 npsts             = len(neut_pst_cidxs)
 
@@ -150,10 +118,7 @@ print('different pseudotime bin sizes')
 #for i in range(bin_szs.shape[0]):
 #    np.save('{0}/pst_eval1_bsz{1}_overlap{2}.npy'.format(datdir,bin_szs[i],overlaps[i]), pst_eig1s[i])
 #
-#
-## In[242]:
-#
-#
+
 bin_szs     = np.array([20,50,100,200,500,1000,2000])
 overlaps    = np.array(bin_szs/2,dtype='int')
 pst_eig1ss  = [np.load('{0}/pst_eval1_bsz{1}_overlap{2}.npy'.format(datdir,bin_szs[i],overlaps[i])) 
@@ -168,9 +133,8 @@ mag_bifurc  = np.amax(pst_eig1ss[5])
 
 print('sampling different numbers of cells per bin')
 ncell = np.array([5,10,20,50,100,200,500,1000])
-pst_nc_eig1b = np.array([np.load('{0}/pst_nc_sample_ns20_bsz1000/ncell{1}.npy'.format(datdir,nc)) for nc in ncell])
-trange = np.load('{0}/pst_nc_sample_ns20_bsz1000/trange.npy'.format(datdir))
-
+pst_nc_eig1b = np.array([np.load('{0}/ncell{1}.npy'.format(ncelldir,nc))[...,0] for nc in ncell])
+trange = np.load('{0}/trange.npy'.format(ncelldir))
 
 # In[287]:
 
