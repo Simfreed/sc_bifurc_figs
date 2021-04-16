@@ -46,7 +46,15 @@ rm -r gene_expr.mtx.gz # optional
 
 run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think...
 ```
-python pca_gene_resample.py --neval 1 --nsamp 100 --dir eig
+python pca_gene_resample.py --neval 1 --nsamp 20 --dir eig
 ```
 
+```
+python fig4_5.py
+```
 
+## fig S5 ##
+```
+python pca_ncell_sampling.py // ~ 1 hr
+python pca_bin_width.py // ~ 0.5 hr
+```

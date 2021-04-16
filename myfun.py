@@ -111,7 +111,8 @@ def clean_nanmax(s):
 
 divz = lambda x,y : np.divide(x, y, out=np.zeros_like(x), where=y!=0)
 meanor0 = lambda x: np.nanmean(x) if x.shape[0]>0 else 0
-stdor0 = lambda x: np.std(x) if x.shape[0]>1 else 0
+stdor0 = lambda x: np.nanstd(x) if x.shape[0]>1 else 0
+semor0     = lambda x: np.nanstd(x)/np.sqrt(x.shape[0]) if len(x)>1 else 0
 #maxor0 = lambda x: np.nan if np.all(x) np.nanmax(x) if x.shape[0]>0 else 0
 
 meanOrZero = lambda l: np.nanmean(l) if len(l) > 0 else 0

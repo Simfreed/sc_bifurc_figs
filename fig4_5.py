@@ -5,27 +5,13 @@ import pickle
 import sys
 import copy
 import myfun as mf
-#from sklearn.decomposition import PCA
 
 import matplotlib
-from matplotlib import colors, ticker, gridspec, rc, transforms
-from matplotlib.ticker import PercentFormatter, LogFormatter, FuncFormatter, LogLocator, AutoMinorLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from collections import Counter, OrderedDict
+from matplotlib import gridspec, rc
+from matplotlib.ticker import LogLocator
 import matplotlib.pyplot as plt
 
-from matplotlib.patches import Patch
-from matplotlib.lines import Line2D
-
-#sys.path.append('/Users/simonfreedman/cqub/xenopus/python/')
-
-
 rc('text',usetex=False)
-#matplotlib.rc('text.latex', preamble=r'\usepackage{color}')
-
-
-# In[3]:
-
 
 # Needs: 
 # pseudotime trajectory
@@ -122,7 +108,7 @@ pst_pc1      = np.load('{0}/dat_evec.npy'.format(eigdir))[:,0]
 # this takes a while, so run with script: pca_gene_resample.py -- see README.md for details
 
 #pst_grp_null_eval     = np.load('{0}/w1_gene_resample_bsz{1}_ns{2}.npy'.format(datdir, bin_sz, nsamp))
-pst_grp_null_eval     = np.array([np.load('{0}/shuf_eig_t{1}.npy'.format(eigdir,i))[:,0] for i in range(npsts)])
+pst_grp_null_eval     = np.array([np.load('{0}/shuf_eval_t{1}.npy'.format(eigdir,i))[:,0] for i in range(npsts)])
 pst_grp_null_eval_mu  = np.mean(pst_grp_null_eval,axis=1)
 pst_grp_null_eval_err = np.std(pst_grp_null_eval,axis=1)
 

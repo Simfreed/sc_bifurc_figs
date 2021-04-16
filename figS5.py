@@ -70,58 +70,16 @@ neut_pst_grps[-1] = np.union1d(neut_pst_grps[-1], srt[last_full_bin:])
 neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in neut_pst_grps]
 npsts             = len(neut_pst_cidxs)
 
+###########################################
+# In[286]: different bin sizes ############
+###########################################
 
-###########################################
-# w1 for different bin sizes
-###########################################
+
 print('different pseudotime bin sizes')
-
-#bin_szs            = np.array([20,50,2000])
-#overlaps           = np.array(bin_szs/2,dtype='int')
-#
-#last_full_bins    = np.array(np.floor(srt.shape[0]/overlaps)*overlaps, dtype='int') - bin_szs + overlaps
-#neut_pst_grpss    = [[srt[i:(i+bin_szs[j])] for i in range(0,last_full_bins[j],overlaps[j])] 
-#                     for j in range(bin_szs.shape[0])]
-#
-#for j in range(bin_szs.shape[0]):
-#    neut_pst_grpss[j][-1] = np.union1d(neut_pst_grpss[j][-1], srt[last_full_bins[j]:])
-#
-#
-## In[203]:
-#
-#
-#neut_pst_cidxss    = [[np.array(neut_psts[grp,0], dtype = 'int') for grp in neut_pst_grpss[i]] 
-#                      for i in range(bin_szs.shape[0])]
-#npstss             = np.array([len(x) for x in neut_pst_cidxss])
-#
-#
-## In[204]: eigenvalues at different bin sizes
-#
-## this can be run quickly so i'll leave it here
-#print('eigendecomposition for different bin sizes')
-#pst_eig1s = []
-#for i in range(bin_szs.shape[0]):
-#    pst_eig1s.append(np.zeros(npstss[i]))
-#    print('\tnumber of pseudotime bins: {0}'.format(npstss[i]))
-#    for t in range(npstss[i]):    
-#        if t%100==0:
-#            print('\t\tbin {0}'.format(t))
-#        pca   = PCA(n_components=1)
-#        pca.fit(gexp_lil[neut_pst_cidxss[i][t]].toarray())
-#        # plain ol pca
-#        pst_eig1s[i][t] = pca.explained_variance_[0]
-#
-#pst_eig1ss = pst_eig1s
-
-
-# In[209]: could save it and load it later
-#for i in range(bin_szs.shape[0]):
-#    np.save('{0}/pst_eval1_bsz{1}_overlap{2}.npy'.format(datdir,bin_szs[i],overlaps[i]), pst_eig1s[i])
-#
 
 bin_szs     = np.array([20,50,100,200,500,1000,2000])
 overlaps    = np.array(bin_szs/2,dtype='int')
-pst_eig1ss  = [np.load('{0}/pst_eval1_bsz{1}_overlap{2}.npy'.format(datdir,bin_szs[i],overlaps[i])) 
+pst_eig1ss  = [np.load('{0}/eigs_bin_size/evals_bsz{1}.npy'.format(datdir,bin_szs[i])) 
                for i in range(len(bin_szs))]
 
 t_bifurc    = np.argmax(pst_eig1ss[5])
