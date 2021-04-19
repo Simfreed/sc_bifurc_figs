@@ -79,13 +79,24 @@ r'\setlength{\thickmuskip}{-1mu}'+\
 r'\setlength{\thinmuskip}{0mu}'+\
 r'\setlength{\medmuskip}{0mu}'+\
 r'\begin{pmatrix}'+\
-r'\sigma(\vec{g}_1) & {\rm cov}(\vec{g}_1,\vec{g}_2) &\cdots \\'+ \
+r'\sigma(g_1) & {\rm cov}(g_1,g_2) &\cdots \\'+ \
 r'\vdots & \ddots& & \\'+\
-r'{\rm cov}(\vec{g}_n,\vec{g}_1)&  \cdots& \sigma(\vec{g}_n)'+\
+r'{\rm cov}(g_n,g_1)&  \cdots& \sigma(g_n)'+\
+r'\end{pmatrix}$'
+
+ctxt = r'$\mathbf{C}='+\
+r'\setlength\arraycolsep{-1pt}'+\
+r'\setlength{\thickmuskip}{-1mu}'+\
+r'\setlength{\thinmuskip}{0mu}'+\
+r'\setlength{\medmuskip}{0mu}'+\
+r'\begin{pmatrix}'+\
+r'\sigma(g_1) & {\rm cov}(g_1,g_2) &\cdots \\'+ \
+r'\vdots & \ddots& & \\'+\
+r'{\rm cov}(g_n,g_1)&  \cdots& \sigma(g_n)'+\
 r'\end{pmatrix}$'
 
 jtxt = r'$\mathbf{J}='+\
-r'\setlength\arraycolsep{0pt}'+\
+r'\setlength\arraycolsep{2pt}'+\
 r'\setlength{\thinmuskip}{0mu}'+\
 r'\setlength{\thickmuskip}{0mu}'+\
 r'\setlength{\medmuskip}{0mu}'+\
@@ -93,14 +104,14 @@ r'\begin{pmatrix}'+\
 r'\frac{\partial\dot{g}_1}{\partial g_1}& \frac{\partial\dot{g}_1}{\partial g_2}& ... \\'+\
 r'\vdots & \ddots & \\'+\
 r'\frac{\partial\dot{g}_n}{\partial g_1}&  & \frac{\partial\dot{g}_n}{\partial g_n}'+\
-r'\end{pmatrix}\Bigg\rvert_{\vec{g}^*} $'
+r'\end{pmatrix}$' #\Bigg\rvert_{\vec{g}^*} $'
 
 
 mulens = r'\setlength{\thickmuskip}{-1mu}\setlength{\thinmuskip}{0mu}\setlength{\medmuskip}{0mu}'
 #modtxt  = mulens + r'$\dot{\vec{g}}=\vec{F}(\vec{g})=\vec{F}(\vec{g}^*+\Delta\vec{g})=\mathbf{J}\Delta\vec{g}$'
 #disctxt = mulens + r'$\Delta\vec{g}(t+1)=\Delta\vec{g}(t)+\Delta t\mathbf{J}\Delta\vec{g}(t)+\sqrt{\Delta t}\vec{\zeta}^i(t)$'
 
-modtxt  = mulens + r'$\dot{\vec{g}}=\vec{F}(\vec{g})=\vec{F}(\vec{g}^*+\overrightarrow{\delta g})=\mathbf{J}\overrightarrow{\delta g}$'
+modtxt  = mulens + r'$\dot{\vec{g}}=\vec{F}(\vec{g})=\vec{F}(\vec{g}^*+\overrightarrow{\delta g})\approx\mathbf{J}\overrightarrow{\delta g}$'
 disctxt = mulens + r'$\overrightarrow{\delta g}\rightarrow\overrightarrow{\delta g}+\Delta t\mathbf{J}\overrightarrow{\delta g}+\sqrt{\Delta t}\vec{\zeta}^i_t$'
 
 ###########################################
@@ -156,7 +167,7 @@ axC   = [plt.subplot( gs[rs[2]:rs[3],tcs0[i]:tcsF[i]]) for i in range(3)] # pote
 #####################################
 ############ CAPTIONS   #############
 #####################################
-xs = [0,-3,0]
+xs = [0,-1,0]
 ys = [-3,-3,-5]
 caps  = ['A','B','C']
 ri = [0,0,rs[1]]
@@ -187,8 +198,8 @@ ys = np.array([yt+np.random.normal(scale=noise, size=nc) for yt in yts]).reshape
 
 
 axA.scatter(xs,ys,s=40, edgecolor=cellcols, facecolor='none',linewidth=1,clip_on=False)
-axA.set_xlim(-4,25)
-axA.set_ylim(-6.5,9)
+axA.set_xlim(-4,20)
+axA.set_ylim(-6.5,8)
 
 #axA.axis('off')
 
@@ -217,7 +228,7 @@ cell_text = np.array([['8','503','','42'],
                    ])
 rowlabs = ['cell 1','cell 2', '...','cell m']
 collabs = ['gene 1','gene 2', '...','gene n']
-collabs = [r'$\vec{g}_1$',r'$\vec{g}_2$', '...',r'$\vec{g}_n$']
+collabs = [r'$g_1$',r'$g_2$', '...',r'$g_n$']
 
 the_table = axA.table(cellText=cell_text,
                       rowLabels=rowlabs,
@@ -225,7 +236,7 @@ the_table = axA.table(cellText=cell_text,
                        colColours=['aqua']*len(collabs),
                       colLabels=collabs,
                       colWidths=[0.05,0.05,0.05,0.05],
-                      bbox=[0.6,0.5,0.3,0.5],
+                      bbox=[0.65,0.5,0.3,0.5],
                       rowLoc='center',
                       colLoc='center'
 
@@ -241,22 +252,21 @@ for cell in table_cells:
 
 axA.axis('off')
 
-axA.text(s=ctxt,x=0.35,y=0.05,fontsize=6,verticalalignment='bottom',horizontalalignment='left', transform=axA.transAxes)
+axA.text(s=ctxt,x=0.4,y=0.05,fontsize=6,verticalalignment='bottom',horizontalalignment='left', transform=axA.transAxes)
 
-gtxtx,gtxty = 8,5.5
-gtxt = axA.text(s=r'$\mathbf{G}$=',x=gtxtx,y=gtxty,fontsize=6,
+gtxtx,gtxty = 7,4
+gtxt = axA.text(s=r'$\mathbf{G}$=',x=gtxtx,y=gtxty,fontsize=7,
          horizontalalignment='left',verticalalignment='center')
-axA.text(s='Cellular Gene\nExpression',x=0.2,y=1,fontsize=8,
-         horizontalalignment='center',verticalalignment='top', transform=axA.transAxes)
+dattitle = 'Cellular Gene\nExpression'
+dattitle = 'Gene Expression Data'
+axA.text(s=dattitle,x=0.1,y=1,fontsize=8,
+         horizontalalignment='left',verticalalignment='top', transform=axA.transAxes)
 
 style = "Simple, tail_width=0.25, head_width=2, head_length=4"
 kw = dict(arrowstyle=style, color="k")
 arr = mpatches.FancyArrowPatch((rectx-rectdx*np.cos(rectth)+0.2, recty-rectdy*np.sin(rectth)+0.5),
                                (gtxtx, gtxty),
                              connectionstyle="arc3,rad={0}".format(-0.1*np.pi), **kw)
-# myrect = mpatches.Rectangle((-0.32,0),1.4,1.01,transform=axA.transAxes,
-#                             facecolor='None',edgecolor='k',clip_on=False,
-#                            linewidth=0.5)
 axA.add_artist(arr)
 
 
@@ -264,19 +274,17 @@ axA.add_artist(arr)
 ###### B: GENERATIVE MODEL   ########
 #####################################
 axB.axis('off')
-axB.text(s='Generative Dynamics',x=0.5,y=1,fontsize=8,
+modtitle = 'Generative Dynamics'
+modtitle = 'Generative Model'
+axB.text(s=modtitle,x=0.5,y=0.95,fontsize=8,
          horizontalalignment='center',verticalalignment='top')
-axB.text(s=modtxt, x=0.5,y=0.83,fontsize=6,
+axB.text(s=modtxt, x=0.5,y=0.75,fontsize=7,
          horizontalalignment='center',verticalalignment='center')
-axB.text(s=disctxt,x=0.5,y=0.65,fontsize=6,
-         horizontalalignment='center',verticalalignment='center')
+#axB.text(s=disctxt,x=0.5,y=0.65,fontsize=6,
+#         horizontalalignment='center',verticalalignment='center')
 
-axB.text(s=jtxt,x=0.5,y=0,fontsize=6,verticalalignment='bottom',horizontalalignment='center')
+axB.text(s=jtxt,x=0.55,y=0,fontsize=7,verticalalignment='bottom',horizontalalignment='center')
 
-# myrect = mpatches.Rectangle((-0.01,0),1,1.01,transform=axB.transAxes,facecolor='None',
-#                             edgecolor='k',clip_on=False,
-#                            linewidth=0.5)
-# axB.add_artist(myrect)
 
 #####################################
 ## C: potentials   ####
