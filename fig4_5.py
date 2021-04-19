@@ -1,7 +1,5 @@
 import numpy as np
 import scipy as scipy
-from scipy import io as scio
-import pickle
 import sys
 import copy
 import myfun as mf
@@ -291,7 +289,7 @@ for i in range(len(caps)):
 #####################################
 ## A: SPRING plot                ####
 #####################################
-skip=1
+skip=10
 
 # plot non-neut points
 traj_idxs = np.array(neut_psts[:,0],dtype='int')
@@ -316,10 +314,10 @@ for i in range(len(ctypes)):
                  text=ctypes[i],alpha=0.8,fontsize=6)
     
 # plot points in neutrophil trajectory
-skip = 1
+skip = 10
 cols = plt.cm.viridis(np.linspace(0,1,idxs.shape[0]))
 axA.scatter(metadata['SPRINGx'][traj_idxs[::skip]],metadata['SPRINGy'][traj_idxs[::skip]], 
-            c=cols[np.array(neut_psts[:,1],dtype='int')],alpha=0.5)
+        c=cols[np.array(neut_psts[:,1],dtype='int')][::skip],alpha=0.5)
 
 axA.set_xticks([])
 axA.set_yticks([])
