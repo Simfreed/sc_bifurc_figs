@@ -24,7 +24,8 @@ rc('text',usetex=False)
 headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
 figdir     = '{0}/figs'.format(headdir)
 datdir     = '{0}/neutrophil_data'.format(headdir)
-eigdir     = '{0}/eig'.format(datdir)
+#corr_dir   = '{0}/corr/min_nc9_gexp_0'.format(datdir)
+corr_dir   = '{0}/corr_nc400'.format(datdir)
 
 gexp_fname = '{0}/gene_expr.npz'.format(datdir)
 pst_fname  = '{0}/pseudotime.txt'.format(datdir)
@@ -62,7 +63,6 @@ ti       = 2*bift - tf
 
 
 # In[8]:
-corr_dir       = '{0}/corr/min_nc9_gexp_0'.format(datdir)
 binmin         = -1
 binmax         = 1
 dbin           = 0.05

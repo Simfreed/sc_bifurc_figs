@@ -44,7 +44,7 @@ python convert_gene_expr.py
 rm -r gene_expr.mtx.gz # optional
 ```
 
-run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think...
+run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think -- see parallelize directory
 ```
 python pca_gene_resample.py --neval 1 --nsamp 20 --dir eig
 ```
@@ -60,7 +60,8 @@ python pca_bin_width.py // ~ 0.5 hr
 ```
 
 ## figs 6, S6, S7 ##
-running the correlations takes like 1.5 hrs minimally -- nice thing to parallelize (see make_corr_cmds.py)
+running the correlations takes can take a while if min_ncels is low -- nice thing to parallelize (see make_corr_cmds.py)
+At min_ncells = 400, only took about half hour
 ```
 python pcc.py --wdir neutrophil_data/corr --bin_sz 1000 --min_ncells 400 --t0 90 --tf 121 
 python fig6_S6_S7.py
