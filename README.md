@@ -60,6 +60,7 @@ python pca_bin_width.py // ~ 0.5 hr
 ```
 
 ## figs 6, S6, S7 ##
+running the correlations takes like 1.5 hrs minimally -- nice thing to parallelize (see make_corr_cmds.py)
 ```
 python pcc.py --wdir neutrophil_data/corr --bin_sz 1000 --min_ncells 400 --t0 90 --tf 121 
 python fig6_S6_S7.py
