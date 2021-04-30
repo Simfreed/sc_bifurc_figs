@@ -223,24 +223,27 @@ plt.style.use('one_col_fig')
 wfrac, hfrac = 4,4
 marg_ht = 1
 leg_ht  = 0.5
-leg_spc = 0.75
+leg_spc = 1
 a_end   = 1
-ab_spc  = 0.5
-b_ht    = 3
-bd_spc  = 1.5
+ab_spc  = 1.25
+b_ht    = 3.25
+bd_spc  = 2.75
 dht     = 3
 eht     = 4
 fht     = 4
-de_spc  = 0.75
-ght     = 4
-fg_spc  = 2.25
+de_spc  = 1
+ght     = 5
+fg_spc  = 3.25
+leg_spc2 = 0.75
 
-marg_wd = 2
-col1_wd = 5
-ac_spc  = 2.5
+marg_wd = 2.5
+col1_wd = 4
+ac_spc  = 3
 col2_wd = 3
-legspc_wd = 0.5
+legspc_wd = 0.75
 leg_wd = 0.5
+
+lspace=1
 
 # row heights
 hts = np.array([
@@ -259,7 +262,7 @@ hts = np.array([
     fht,
     fg_spc,
     leg_ht,
-    leg_spc,
+    leg_spc2,
     ght
 
 ])
@@ -311,8 +314,8 @@ caps = [
      'A',   'B',  'C',  'D', 'E',  'F',   'G',   'H']
 ri = [rs[0],rs[4],rs[0],rs[6],rs[8],rs[10],rs[12],rs[12]]
 ci = [0,    0,    cs[1],0,    0,    0,     0,     cs[1]]
-xs = [0,    0,    2.5,    0,    0,    0,     0,     2]
-ys = [0,   -1,    0,   -1,    2,    0,     0,     0]
+xs = [0,    0,    5,    0,    0,    0,     0,     4]
+ys = [0,   -1,    0,   -2,    1.5,  0,     0,     0]
 
 for i in range(len(caps)):
     cap_ax=plt.subplot(gs[ri[i]:ri[i]+1,ci[i]:ci[i]+1])
@@ -370,19 +373,19 @@ cols = ['b','goldenrod','r']
 bifvarlab = r'$m_1$'
 tss = -500
 for i in range(len(traj_m1)):
-    axB.hist(dtraj[i,tss:,0].reshape(-1),color=cols[i],histtype='step',lw=2,bins=np.linspace(-0.1,5.5,20),
+    axB.hist(dtraj[i,tss:,0].reshape(-1),color=cols[i],histtype='step',lw=1,bins=np.linspace(-0.1,5.5,20),
              density=True,alpha=0.8,label = r'$m_1=$${0:.0f}$'.format(traj_m1[i]))
     
-axB.set_yscale('symlog')
+#axB.set_yscale('symlog')
 
-leg = axB.legend(loc=(0.25,0.4),labelspacing=0,handletextpad=0.5,
-                 handlelength=1,frameon=False, borderpad=0)
-for i,text in zip(range(3),leg.get_texts()):
-    plt.setp(text, color = cols[i])
+leg = axB.legend(loc=(0.25,0.45),labelspacing=0,handletextpad=0.5,
+                 handlelength=0,frameon=False, borderpad=0, labelcolor=cols, markerscale=0)
+
 
 axB.set_xlabel('steady state $g_1$',labelpad=-1)
-axB.set_ylabel('frequency')
+axB.set_ylabel('frequency',labelpad=2)
 axB.set_xticks(np.arange(0,7,2))
+axB.set_yticks(np.arange(3))
 
 #####################################
 ## C: gene expression              ##
@@ -390,7 +393,7 @@ axB.set_xticks(np.arange(0,7,2))
 im = axC.imshow(gexp_mu_sort2,aspect='auto')
 
 axC.set_xticks(np.arange(nm1))
-axC.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in m1s])
+axC.set_xticklabels(['{0:.0f}'.format(i) if np.mod(i,1)<1e-5else '' for i in m1s])
 
 axC.set_xlabel(bifvarlab)
 axC.set_ylabel('gene index')
@@ -410,16 +413,18 @@ costh_tau_lims = [-1,cos_th_hist.shape[1]]
 ## D: covariance eigenvalue         ##
 #####################################
 cols = ['k','gray']
-axD.plot(m1s, np.real(cov_evals[0,:,0]),'o-', color=cols[0],fillstyle='none', label=r'data ($\omega_1$)')
+axD.plot(m1s, np.real(cov_evals[0,:,0]),'o-', color=cols[0],fillstyle='none', 
+         label='expression\n'+r'($\omega_1$)')
 axD.set_ylabel(r'$\omega_1$')
-axD.set_ylabel(r'cov. eval. 1')
+axD.set_ylabel('covariance\neigenvalue 1',linespacing=lspace,labelpad=2)
 
 axD.set_xticklabels([])
 axD.set_yticks(np.arange(0,7,2))
 axD.set_xlim(*taulims)
 axD.errorbar(m1s, null_eval_mu[:,0], yerr = null_eval_err[:,0], color=cols[1],
-             capsize=2,alpha=0.5, label='shuffled expr.\n'+r'($\omega_1^{\rm null}$)')
-leg = axD.legend(loc = (0.1,0.4),labelspacing=0,frameon=False,ncol=2,columnspacing=4.5,
+             capsize=2,alpha=0.5, 
+             label='shuffled expr.\n'+r'($\omega_1^{\rm null}$)')
+leg = axD.legend(loc = (0.05,0.35),labelspacing=0,frameon=False,ncol=2,columnspacing=3.5,
                  handlelength=0.5,handletextpad=0.2)
 for i,text in zip(range(len(cols)),leg.get_texts()):
     plt.setp(text, color = cols[i])
@@ -431,8 +436,9 @@ cos_th_hist_masked = np.ma.masked_where(cos_th_hist == 0, cos_th_hist)
 cmap = copy.copy(mpl.cm.get_cmap("viridis"))
 cmap.set_bad(color='white')
 im=axE.imshow(cos_th_hist_masked,aspect='auto',cmap=cmap)#, origin='upper')
-axE.set_ylabel('cov. evec. proj.',labelpad=2)
-axE.text(s=r'$\hat{g}(m_1)\cdot \vec{s}_1({m_1}_c)$',x=0.63,y=0.5,transform=axE.transAxes, fontsize=8, horizontalalignment='left')
+axE.set_ylabel('cov. eigenvec.\nprojection',labelpad=2, linespacing=lspace)
+mulens = r'\setlength{\thickmuskip}{-1mu}\setlength{\thinmuskip}{0mu}\setlength{\medmuskip}{0mu}'
+axE.text(s=mulens+r'$\hat{g}(m_1)\cdot \vec{s}_1({m_1}_c)$',x=0.63,y=0.5,transform=axE.transAxes, fontsize=8, horizontalalignment='left')
 axE.set_yticks(np.arange(cos_th_hist.shape[0]))
 axE.set_yticklabels(['{0:.1f}'.format(cos_th_bin_ctrs[i]) if i%2==0 else ''
                       for i in range(len(cos_th_bin_ctrs)-1,-1,-1)])
@@ -441,7 +447,7 @@ axE.axvline(bif_idxs[0],color='k', linestyle = '--', alpha=0.5)
 axE.set_xlim(*costh_tau_lims)
 
 cbar = fig.colorbar(im, cax=axEL, orientation='vertical', aspect=1)
-cbar.set_label(r'frequency',rotation=270, labelpad=6)
+cbar.set_label(r'frequency',rotation=270, labelpad=8)
 axEL.yaxis.set_label_position('right')
 axEL.yaxis.set_ticks([2,4,6,8])
 
@@ -452,7 +458,7 @@ axEL.yaxis.set_ticks([2,4,6,8])
 axcols = ['r','b']
 axF1.errorbar(m1s,mu_jac_max_eval, yerr=std_jac_max_eval, capsize=5, color=axcols[0],
               marker='s', fillstyle='none', label=r'$\lambda_d$')
-axF1.set_ylabel('max jac. eval.', color=axcols[0])#, labelpad=0)
+axF1.set_ylabel('max jacobian\neigenvalue', color=axcols[0], linespacing=lspace)#, labelpad=0)
 axF1.tick_params(axis='y', labelcolor=axcols[0])
 axF1.spines['left'].set_color(axcols[0])
 axF1.spines['right'].set_color(axcols[1])
@@ -469,7 +475,7 @@ for text in leg.get_texts():
 #jacobian eigenvector error
 axF2=axF1.twinx()
 axF2.plot(m1s, jac_evec_err, 'o-',fillstyle='none',color=axcols[1],label=r'$||\vec{p}_d-\vec{s}_1||$')
-axF2.set_ylabel('jac. evec. err.',rotation=270,labelpad=10,color=axcols[1])
+axF2.set_ylabel('jacobian\neigenvec. err.',rotation=270,labelpad=17,color=axcols[1],linespacing=lspace)
 axF2.tick_params(axis='y', labelcolor=axcols[1])
 axF2.spines['left'].set_color(axcols[0])
 axF2.spines['right'].set_color(axcols[1])
@@ -486,10 +492,10 @@ for text in leg.get_texts():
 corr_hist_masked = np.ma.masked_where(corr_hists == 0, corr_hists)
 im = axG.imshow(corr_hist_masked.T,aspect='auto')
 axG.set_xticks(np.arange(nm1))
-axG.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,0.5)<1e-5else '' for i in m1s])
+axG.set_xticklabels(['{0:.1f}'.format(i) if np.mod(i,1)<1e-5else '' for i in m1s])
 
 axG.set_xlabel(bifvarlab)
-axG.set_ylabel(r'corr. coeff. ($R_{ij}$)')
+axG.set_ylabel(r'correlation coeff. ($R_{ij}$)')
 axG.axvline(bif_idxs[0],color='k', linestyle = '--', alpha=0.5)
 
 axG.set_yticks(np.arange(corr_hists.shape[1]))
@@ -511,21 +517,18 @@ for i in range(len(m1_ii)):
     axH.plot(alphas[asrt],corrsxy[2][m1_ii[i]],'o',color=cols[i],
              label = bifvarlab+r'$={0:.0f}$'.format(m1s[m1_ii[i]]))
 
-leg = axH.legend(loc=(-0.15,0.6),labelspacing=0,handletextpad=-0.8,
-                 frameon=False)
-for i,text in zip(range(3),leg.get_texts()):
-    plt.setp(text, color = cols[i])
+leg = axH.legend(loc=(-0.1,0.65),labelspacing=0,handletextpad=-0.8,
+                 frameon=False, labelcolor=cols)
 
 axH.set_xlabel(r'response coupling ($\alpha_i$)')
-axH.set_ylabel(r'driver corr. ($R_{i,d(i)}$)')
+axH.set_ylabel(r'driver corr. ($R_{i,d(i)}$)',labelpad=-2)
 
 axH.set_yticks(np.arange(-0.9,1,0.3))
 axH.set_xticks(np.arange(0,1.2,0.5))
 
 figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
-plt.savefig('{0}/fig3_tc_grn.pdf'.format(figdir), bbox_inches='tight')
-
+plt.savefig('{0}/fig3_saddle_node.pdf'.format(figdir), bbox_inches='tight')
 
 ############################################
 ########### Fig S4-- resampling evec #######
