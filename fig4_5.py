@@ -396,12 +396,13 @@ axCin.set_yticks([-100,0,100,10000])
 #difftxt = r'$\textcolor{black}{\omega_1({\rm data})}-\textcolor{gray}{\omega_1({\rm null})}$'
 difftxt = r'${\omega_1({\rm data})}-{\omega_1({\rm null})}$'
 difftxts = [r'${\omega_1({\rm data})}$-', r'${\omega_1({\rm null})}$']
+difftxts = [r'${\omega_1^{\rm data}}$-', r'${\omega_1^{\rm null}}$']
 
 # axCin.text(x=0,y=0.98,s=difftxt,color=col,
 #            transform=axCin.transAxes, verticalalignment='bottom',fontsize=8)
 halines = ['right','left']
 for i in range(len(difftxts)):
-    axCin.text(x=0.55,y=1.05,s=difftxts[i],color=cols[i],horizontalalignment = halines[i],
+    axCin.text(x=0.55,y=1.01,s=difftxts[i],color=cols[i],horizontalalignment = halines[i],
                transform=axCin.transAxes, verticalalignment='bottom',fontsize=8)
 
 axCin.set_xticks(xtix_all[np.where(xtix_all>ti)])
@@ -429,7 +430,7 @@ axD.set_yticklabels(['{0:.1f}'.format(-i) for i in cos_th_rng[::tick_skip]])
 #axD.set_ylabel(r'$\hat{g}^m_i\cdot \vec{s}^1_c$')
 axD.set_ylabel(r'cov. evec. proj.')
 axD.set_xlabel(r'control parameter ($\tau$)')
-axD.text(s=r'$\hat{g}(\tau)\cdot \vec{s}^1(\tau_m)$',x=0.05,y=0.8,fontsize=10,transform=axD.transAxes)
+axD.text(s=r'$\hat{g}(\tau)\cdot \vec{s}_1(\tau_m)$',x=0.05,y=0.8,fontsize=10,transform=axD.transAxes)
 
 #axD.set_xticklabels([])
 axD.set_xlim(*taulims)
@@ -668,7 +669,7 @@ for i,text in zip(range(5),leg.get_texts()):
 
 # both versions, x-axis
 axC.set_xlim(*taulims)
-axC.set_xlabel(r'pseudotime ($\tau$)')
+axC.set_xlabel(r'control parameter ($\tau$)')
 axC.text(s='myelocyte',x=0,y=0.85,color=cols[0],fontsize=8,fontweight='bold',transform=axC.transAxes)
 axC.text(s='promyelocyte',x=0.3,y=0.85,color=cols[1],fontsize=8,fontweight='bold',transform=axC.transAxes)
 

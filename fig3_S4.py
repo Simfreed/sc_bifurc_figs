@@ -432,7 +432,7 @@ cmap = copy.copy(mpl.cm.get_cmap("viridis"))
 cmap.set_bad(color='white')
 im=axE.imshow(cos_th_hist_masked,aspect='auto',cmap=cmap)#, origin='upper')
 axE.set_ylabel('cov. evec. proj.',labelpad=2)
-axE.text(s=r'$\hat{g}(m_1)\cdot \vec{s}^1_c$',x=0.05,y=0.8,fontsize=10,transform=axE.transAxes)
+axE.text(s=r'$\hat{g}(m_1)\cdot \vec{s}_1({m_1}_c)$',x=0.63,y=0.5,transform=axE.transAxes, fontsize=8, horizontalalignment='left')
 axE.set_yticks(np.arange(cos_th_hist.shape[0]))
 axE.set_yticklabels(['{0:.1f}'.format(cos_th_bin_ctrs[i]) if i%2==0 else ''
                       for i in range(len(cos_th_bin_ctrs)-1,-1,-1)])
@@ -462,19 +462,19 @@ axF1.set_xlim(*taulims)
 axF1.set_xlabel(bifvarlab)
 axF1.set_xlabel('control parameter ({0})'.format(bifvarlab))
 axF1.axvline(m1s[bif_idxs[0]],color='k', linestyle = '--', alpha=0.5)
-leg = axF1.legend(loc=(0.15,0),frameon=False,handlelength=1,handletextpad=0.5)
+leg = axF1.legend(loc=(0.17,0),frameon=False,handlelength=1,handletextpad=0.5)
 for text in leg.get_texts():
     text.set_color(axcols[0])
 
 #jacobian eigenvector error
 axF2=axF1.twinx()
-axF2.plot(m1s, jac_evec_err, 'o-',fillstyle='none',color=axcols[1],label=r'$||\vec{p}^d-\vec{s}^1||$')
+axF2.plot(m1s, jac_evec_err, 'o-',fillstyle='none',color=axcols[1],label=r'$||\vec{p}_d-\vec{s}_1||$')
 axF2.set_ylabel('jac. evec. err.',rotation=270,labelpad=10,color=axcols[1])
 axF2.tick_params(axis='y', labelcolor=axcols[1])
 axF2.spines['left'].set_color(axcols[0])
 axF2.spines['right'].set_color(axcols[1])
 axF2.set_yticks([0.1,0.3,0.5,0.7,0.9])
-leg = axF2.legend(loc=(0.65,0.76),frameon=False,handlelength=1,handletextpad=0.5)
+leg = axF2.legend(loc=(0.55,0.76),frameon=False,handlelength=1,handletextpad=0.5)
 for text in leg.get_texts():
     text.set_color(axcols[1])
 

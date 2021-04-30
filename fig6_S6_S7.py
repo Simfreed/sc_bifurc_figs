@@ -462,8 +462,8 @@ for i in range(nrow):
         
         if j == 0:
             if i==2:
-                ax.set_ylabel(r'gene expression (norm.)')
-                ax.yaxis.set_label_coords(-0.2,1.5)
+                ax.set_ylabel(r'gene expression (normalized)')
+                ax.yaxis.set_label_coords(-0.2,1.1)
 
         else:
             ax.set_yticklabels([])
@@ -532,8 +532,8 @@ for i in range(nrow):
         
         if j == 0:
             if i==2:
-                ax.set_ylabel(r'fraction of pc1 $(\vec{v}_i^2)$ (norm.)')
-                ax.yaxis.set_label_coords(-0.2,1.5)
+                ax.set_ylabel(r'fraction of pc1 $(|\vec{s}_1^{\,i}|^2)$ (normalized)')
+                ax.yaxis.set_label_coords(-0.2,1.1)
 
         else:
             ax.set_yticklabels([])

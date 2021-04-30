@@ -199,7 +199,7 @@ for i in range(len(axs)):
 
         if i==1:
             ax.set_yticklabels([])
-            label=r'$\tau_D=${0}'.format(tau)
+            label=r'$k_D=${0:.2f}'.format(1/tau)
         else:
             label=r'$m_1=${0}'.format(m1)
 
@@ -242,7 +242,7 @@ axD.plot(pf_tau, pf_n0,'ko',markersize=0.5)
 axD.plot(pf_s_tau, pf_n1,'ko',markersize=0.5)
 axD.plot(pf_s_tau, pf_s,'k--',fillstyle='none')
 
-axD.set_xlabel(r'$\tau_D$')
+axD.set_xlabel(r'$1/k_D$')
 
 figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
