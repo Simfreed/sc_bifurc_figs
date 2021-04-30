@@ -48,6 +48,10 @@ run the eigenvalue decomposition for the data and nulls -- this takes a few hour
 ```
 python pca_gene_resample.py --neval 1 --nsamp 20 --dir eig
 ```
+run the script to get gene expression trajectories
+```
+python gexp_trajs.py
+```
 
 ```
 python fig4_5.py
