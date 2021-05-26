@@ -1,4 +1,7 @@
 # sc_bifurc_figs
+
+for package version info, see conda_list.txt
+
 ## fig 1 ##
 ```
 python grn_sim_runner.py --dir no_bifurc --nresp 0 --hill 1 --scale 200
