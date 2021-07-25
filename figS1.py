@@ -39,7 +39,7 @@ pf_s_tau  = np.array([pf_tau[i] for i in range(pf_tau.shape[0]) if pf_g1[i].shap
 
 #### the figure ####
 ### plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 # nr = 90
 # nc = 45
 

@@ -99,7 +99,7 @@ r'\end{align*}'
 ############ the figure ##################
 ##########################################
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 marg_ht  = 1
 spc_ht   = 5

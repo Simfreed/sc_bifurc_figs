@@ -218,7 +218,7 @@ gexp_mu_sort2 = np.vstack([mf.norm0to1(gexp_mut[[0]],1),
 ######### the figure ################################
 #######################################################
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 wfrac, hfrac = 4,4
 marg_ht = 1
