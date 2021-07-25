@@ -5,6 +5,9 @@ import myfun as mf
 import sys
 import os
 
+import matplotlib
+matplotlib.use('Agg')
+
 from matplotlib import gridspec, rc
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -53,7 +56,7 @@ clust_label_bools = [np.array(cl,dtype='bool') for cl in clust_labels]
 #############################
 ###### The figure ###########
 #############################
-plt.style.use('one_col_fig')
+plt.style.use('./one_col_fig.mplstyle')
 
 frac = 2
 
