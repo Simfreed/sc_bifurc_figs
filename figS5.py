@@ -165,7 +165,7 @@ print('generating figure s5')
 
 
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 tseries_ht = 8
 spc_ht  = 5

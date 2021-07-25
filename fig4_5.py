@@ -168,7 +168,7 @@ t_bifurc_pf = np.where(np.diff(pst_eig1_n)>125)[0][0]
 print('making figure 4')
 
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 matplotlib.rcParams.update({'font.size': 7,
                             'axes.titlesize':7, 
                             'axes.labelsize':7,
@@ -510,7 +510,7 @@ grp_sem_gexp  = [np.array([grp_std_gexp[i][:,t]/np.sqrt(grp_gexp[i][t].shape[1])
 print('making figure 5')
 
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 matplotlib.rcParams.update({'font.size': 7,
                             'axes.titlesize':7, 

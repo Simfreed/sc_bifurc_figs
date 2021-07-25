@@ -224,7 +224,7 @@ r'\setlength{\medmuskip}{0mu}'
 bifvarlab = r'$m_1$'
 bi = np.argmin(np.abs(m1s-3.0)) # the correct bifurcation point
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 wfrac, hfrac = 2,2
 marg_ht = 1

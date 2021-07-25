@@ -230,7 +230,7 @@ for i in range(len(gtypes)):
 print('making fig 6')
 
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 
 marg_ht = 1
 leg_ht  = 1

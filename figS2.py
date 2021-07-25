@@ -168,7 +168,7 @@ gexp_mu_sort = np.array([np.vstack([mf.norm0to1(gexp_mut[i,[0]],1),
 
 ### the figure 
 plt.style.reload_library()
-plt.style.use('one_col_fig')
+plt.style.use('one_col_fig.mplstyle')
 # nr = 90
 # nc = 45
 
