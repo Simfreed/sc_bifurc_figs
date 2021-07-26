@@ -44,7 +44,7 @@ bash download_neutrophil_data.sh
 the gene expression matrix loads a lot (~3x) faster as an npz file than an mtx file, so convert it, since we have to read it a few times
 ```
 python convert_gene_expr.py
-rm -r gene_expr.mtx.gz # optional
+rm -r neutrophil_data/gene_expr.mtx.gz # optional
 ```
 
 run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think -- see parallelize directory
