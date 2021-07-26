@@ -7,6 +7,8 @@ import os
 import copy
 
 import matplotlib as mpl
+mpl.use('Agg')
+
 from matplotlib import rc, gridspec
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
