@@ -24,7 +24,7 @@ nsamp     = args.nsamp
 samp_repl = True
 bin_sz    = args.bin_sz
 overlap   = int(args.ov_frac * bin_sz)
-npc       = args.neval if args.neval > 0 else bin_sz
+npc       = args.neval if args.neval > 0 else 1 
 
 np.random.seed(args.seed)
 

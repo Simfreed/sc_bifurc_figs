@@ -77,6 +77,7 @@ python fig4_5.py
 ```
 python pca_ncell_sampling.py // ~ 1 hr
 python pca_bin_width.py // ~ 0.5 hr
+python figS5.py
 ```
 
 ## figs 6, S6, S7 ##
