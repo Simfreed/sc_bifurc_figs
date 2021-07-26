@@ -8,6 +8,8 @@ import myfun as mf
 import networkx as nx
 
 import matplotlib
+matplotlib.use('Agg')
+
 from matplotlib import gridspec, rc
 from matplotlib.ticker import LogLocator
 import matplotlib.pyplot as plt
@@ -25,7 +27,7 @@ headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
 figdir     = '{0}/figs'.format(headdir)
 datdir     = '{0}/neutrophil_data'.format(headdir)
 #corr_dir   = '{0}/corr/min_nc9_gexp_0'.format(datdir)
-corr_dir   = '{0}/corr_nc400'.format(datdir)
+corr_dir   = '{0}/corr'.format(datdir)
 
 gexp_fname = '{0}/gene_expr.npz'.format(datdir)
 pst_fname  = '{0}/pseudotime.txt'.format(datdir)

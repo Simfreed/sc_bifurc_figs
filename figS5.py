@@ -8,6 +8,8 @@ import myfun as mf
 from sklearn.decomposition import PCA
 
 import matplotlib
+matplotlib.use('Agg')
+
 from matplotlib import colors, ticker, gridspec, rc, transforms
 from matplotlib.ticker import PercentFormatter, LogFormatter, FuncFormatter, LogLocator, AutoMinorLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
