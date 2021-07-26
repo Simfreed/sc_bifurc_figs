@@ -3,7 +3,8 @@
 ## Minimal Requirements ##
 - Latex
 - Python 3
-While not strictly required, it'll be easiest to have all the correct pacakges / versions in an Anaconda environment,
+
+While Anaconda is not strictly required, it'll be easiest to have all the correct packages / versions in an Anaconda environment.
 Create the environment via:
 ```
 conda env create -f environment.yml
@@ -12,7 +13,7 @@ and activate it with
 ```
 conda activate bifurc
 ```
-Otherwise, consult environment.yml for package info.
+If not using anaconda, consult environment.yml for package info.
 
 
 ## fig 1 ##
