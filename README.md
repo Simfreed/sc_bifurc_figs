@@ -1,6 +1,19 @@
 # sc_bifurc_figs
 
-for package version info, see conda_list.txt
+## Minimal Requirements ##
+- Latex
+- Python 3
+While not strictly required, it'll be easiest to have all the correct pacakges / versions in an Anaconda environment,
+Create the environment via:
+```
+conda env create -f environment.yml
+```
+and activate it with 
+```
+conda activate bifurc
+```
+Otherwise, consult environment.yml for package info.
+
 
 ## fig 1 ##
 ```
