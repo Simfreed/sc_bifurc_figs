@@ -2,6 +2,7 @@ import grn_sim as sim
 import argparse
 import numpy as np
 import os 
+import scipy.sparse as sp
 
 parser = argparse.ArgumentParser()
 
@@ -94,16 +95,27 @@ for i in range(nb_var):
     resp_final[i] = v
 
 os.makedirs(args.dir, exist_ok=True)
-gexp = np.hstack([driv_final, resp_final]).transpose((0,2,1))
 
-np.save('{0}/gexp.npy'.format(args.dir),gexp)
-np.save('{0}/taus.npy'.format(args.dir),taus)
-np.save('{0}/m1s.npy'.format(args.dir),m1s)
-np.save('{0}/bvars.npy'.format(args.dir),taus if args.run_pf else m1s)
-np.save('{0}/alphas.npy'.format(args.dir),alphas)
-np.save('{0}/betas.npy'.format(args.dir),betas)
-np.save('{0}/ks.npy'.format(args.dir),ks)
-np.save('{0}/driv_idxs.npy'.format(args.dir),drv_idxs)
-np.save('{0}/vtaus.npy'.format(args.dir),vtaus)
-np.save('{0}/dtraj.npy'.format(args.dir),driv_traj)
-np.save('{0}/rtraj.npy'.format(args.dir),resp_traj)
+gexp       = np.hstack([driv_final, resp_final]).transpose((0,2,1))
+nt, nc, ng = gexp.shape
+gexp_flat  = sp.coo_matrix(gexp.reshape((nt*nc, ng)))
+bvars      = taus if args.run_pf else m1s
+pst_mat    = np.vstack([np.arange(nt*nc), np.repeat(bvars, nc)]).T
+
+# to run eigenvalue code
+sp.save_npz('{0}/gexp_flat.npz'.format(args.dir), gexp_flat)
+np.savetxt('{0}/pseudotime.txt'.format(args.dir), pst_mat, fmt=["%d","%.1f"], delimiter="\t", header='cell\tpseudotime')
+
+# to inspect the simulation
+np.save('{0}/gexp.npy'.format(      args.dir),  gexp)
+np.save('{0}/taus.npy'.format(      args.dir),  taus)
+np.save('{0}/m1s.npy'.format(       args.dir),  m1s)
+np.save('{0}/bvars.npy'.format(     args.dir),  bvars)
+np.save('{0}/alphas.npy'.format(    args.dir),  alphas)
+np.save('{0}/betas.npy'.format(     args.dir),  betas)
+np.save('{0}/ks.npy'.format(        args.dir),  ks)
+np.save('{0}/driv_idxs.npy'.format( args.dir),  drv_idxs)
+np.save('{0}/vtaus.npy'.format(     args.dir),  vtaus)
+np.save('{0}/dtraj.npy'.format(     args.dir),  driv_traj)
+np.save('{0}/rtraj.npy'.format(     args.dir),  resp_traj)
+
