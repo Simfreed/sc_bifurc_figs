@@ -1,8 +1,8 @@
 name: bifurc
 dependencies:
     - python=3.8.0
-    - numpy=1.19.4
-    - matplotlib=3.3.3
+    - numpy>=1.19
+    - matplotlib>=3.3
     - scikit-learn=0.23.2
     - scipy=1.6.0
     - networkx=2.5
