@@ -1,6 +1,5 @@
 import numpy as np
 import scipy as scipy
-from scipy import io as scio
 from sklearn.decomposition import PCA
 import argparse
 import os
@@ -42,7 +41,7 @@ print('done loading gene expr matrix')
 
 # load pseudotime cell indexes
 print('binning by pseudotime')
-neut_psts         = np.genfromtxt(args.pst_fname, skip_header=True, dtype='int')
+neut_psts         = np.genfromtxt(args.pst_fname, skip_header=True)
 srt               = np.argsort(neut_psts[:,1])
 pst_bins          = mf.get_bins(srt, bin_sz, overlap)
 neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in pst_bins]
@@ -59,11 +58,14 @@ pca            = PCA(n_components=npc)
 ti = args.ti
 tf = args.tf if args.tf > 0 else npst
 
+bin_time = []
 for t in range(ti, tf):
 
     if t%5 == 0:
         print('bin {0}/{1}'.format(t,npst))
-        
+
+    bin_time.append(np.mean(neut_psts[neut_pst_cidxs[t],1]))
+
     gexpt        = gexp_lil[neut_pst_cidxs[t]].toarray()
     ncell, ngene = gexpt.shape
 
@@ -81,3 +83,4 @@ for t in range(ti, tf):
     
 np.save('{0}/dat_evec.npy'.format(args.outdir), cov_evecs)
 np.save('{0}/dat_eval.npy'.format(args.outdir), cov_evals)
+np.save('{0}/bin_psts.npy'.format(args.outdir), np.array(bin_time))
