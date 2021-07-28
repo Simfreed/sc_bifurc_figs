@@ -30,9 +30,9 @@ meta_fname = '{0}/metadata.txt'.format(datdir)
 
 print('loading cluster labels and SPRING positions')
 dtp      = np.dtype([('Library Cell', np.unicode_, 16),('barcode', np.unicode_, 20),
-              ('Time point', np.int),('Starting population', np.unicode_, 20),
+              ('Time point', int),('Starting population', np.unicode_, 20),
                ('Cell type annotation', np.unicode_, 60),
-               ('Well', np.int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
+               ('Well', int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
 
 metadata = np.genfromtxt(meta_fname, delimiter='\t',skip_header=1, dtype=dtp)
 
