@@ -3,10 +3,10 @@ import scipy as scipy
 from sklearn.decomposition import PCA
 import argparse
 import os
+import myfun as mf
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--dir",        type=str, help  = "output subdirectory", default='eigs_bin_size') 
 parser.add_argument("--neval",      type=int, help="# of evals", default=1)
 parser.add_argument("--ov_frac",    type=float, help="fraction of bin to overlap", default=0.5)
 parser.add_argument("--nsamp",      type=int, help="# of samps for null", default=20)
@@ -15,32 +15,27 @@ parser.add_argument("--tf_frac",    type=float, help="fraction of trajectory to 
 parser.add_argument("--seed",       type=int, help="random number seed", default=None)
 parser.add_argument("--bin_szs",    type=int, help="list of numbers of cells to use (space delimited)", nargs = '+', default=[20,50,100,200,500,1000, 2000])
 
+parser.add_argument("--gexp_fname", type=str, help = "ncell x ngene gene expression matrix in scipy.sparse format", default='neutrophil_data/gene_expr.npz')
+parser.add_argument("--pst_fname",  type=str, help = "input/output data location",                                  default='neutrophil_data/pseudotime.txt')
+parser.add_argument("--outdir",     type=str, help = "directory for output",                                        default='neutrophil_data/eigs_bin_size') 
 
 args = parser.parse_args()
 
 # params
 nsamps    = args.nsamp
 npc       = args.neval 
-#ncells    = np.array(args.ncells)
 
 np.random.seed(args.seed)
 samp_repl = True
 
 # load gene expression and pseudotime
-headdir    = '.'
-datdir     = '{0}/neutrophil_data'.format(headdir)
-outdir     = '{0}/{1}'.format(datdir, args.dir)
-gexp_fname = '{0}/gene_expr.npz'.format(datdir)
-pst_fname  = '{0}/pseudotime.txt'.format(datdir)
-
-
-gexp_sp    = scipy.sparse.load_npz(gexp_fname) # WT: 18.3 seconds
+gexp_sp    = scipy.sparse.load_npz(args.gexp_fname) # WT: 18.3 seconds
 gexp_lil   = gexp_sp.tolil() # WT: 3 min 55 seconds
 
-neut_psts  = np.genfromtxt(pst_fname, skip_header=True, dtype='int')
+neut_psts  = np.genfromtxt(args.pst_fname, skip_header=True, dtype='int')
 srt        = np.argsort(neut_psts[:,1])
 
-os.makedirs(outdir, exist_ok = True)
+os.makedirs(args.outdir, exist_ok = True)
 
 pca   = PCA(n_components=npc)
 
@@ -48,10 +43,8 @@ for i in range(len(args.bin_szs)):
     bin_sz   = args.bin_szs[i]
     overlap  = int(args.ov_frac * bin_sz)
 
-    last_full_bin     = int(np.floor(srt.shape[0]/overlap)*overlap) - bin_sz + overlap
-    neut_pst_grps     = [srt[i:(i+bin_sz)] for i in range(0,last_full_bin,overlap)]
-    neut_pst_grps[-1] = np.union1d(neut_pst_grps[-1], srt[last_full_bin:])
-    neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in neut_pst_grps]
+    pst_bins          = mf.get_bins(srt, bin_sz, overlap)
+    neut_pst_cidxs    = [np.array(neut_psts[grp,0], dtype = 'int') for grp in pst_bins]
     npst              = len(neut_pst_cidxs)
     
     ti = int(max(np.floor(args.ti_frac*npst) , 0   ))
@@ -70,6 +63,6 @@ for i in range(len(args.bin_szs)):
         pca.fit(gexp_lil[neut_pst_cidxs[t]].toarray())
         evals[j] = pca.explained_variance_
 
-    np.save('{0}/trange_bsz{1}.npy'.format(outdir, bin_sz), trange)
-    np.save('{0}/evals_bsz{1}.npy'.format( outdir, bin_sz), evals)
+    np.save('{0}/trange_bsz{1}.npy'.format(args.outdir, bin_sz), trange)
+    np.save('{0}/evals_bsz{1}.npy'.format( args.outdir, bin_sz), evals)
 
