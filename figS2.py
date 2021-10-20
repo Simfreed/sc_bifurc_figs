@@ -20,7 +20,9 @@ rc('text',usetex=True)
 rc('text.latex', preamble=r'\usepackage{amssymb}') 
 
 ###### load stuff #######
-datdir  = 'pf_scale200'
+datdir  = 'pf_scale20_tmax10000'
+#figdir = 'figs'
+figdir = '{0}/figs'.format(datdir)
 m2 = 3
 m1s       = np.load('{0}/taus.npy'.format(datdir))
 gexp      = np.load('{0}/gexp.npy'.format(datdir))
@@ -340,7 +342,7 @@ axB.plot(m1s, np.real(cov_evals[0,:,0]),'o-', color='k',fillstyle='none', label=
 axB.errorbar(m1s, null_eval_mu[:,0], yerr = null_eval_err[:,0], color='gray', 
              capsize=2, label='shuffled\nexpression')
 axB.set_xticklabels([])
-axB.legend(labelspacing=0,loc=(0.05,0.2))
+axB.legend(labelspacing=0,loc=(0.05,0.4))
 axB.set_yticks(np.arange(0,14,3))
 axB.set_ylabel(r'cov. eval. 1 $(\omega_1)$')
 
@@ -350,11 +352,10 @@ axB.set_ylabel(r'cov. eval. 1 $(\omega_1)$')
 axC.plot(m1s, np.real(cov_evals[1,:,0]),'o-', color='b',fillstyle='none', label='cluster A')
 axC.plot(m1s, np.real(cov_evals[2,:,0]),'s-', color='r',fillstyle='none', label='cluster B',markersize=5)
 axC.set_xlabel('control parameters ('+bifvarlab+')')
-axC.legend(labelspacing=0,loc=(0.02,0.35))
+axC.legend(labelspacing=0,loc=(0.02,0.65))
 axC.set_yticks(np.arange(0,0.9,0.2))
 axC.set_ylabel(r'cov. eval. 1 $(\omega_1)$')
 
-figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
 plt.savefig('{0}/figS2_pfork.pdf'.format(figdir), bbox_inches='tight')
 

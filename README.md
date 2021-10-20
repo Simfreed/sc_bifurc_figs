@@ -63,7 +63,7 @@ rm -r neutrophil_data/gene_expr.mtx.gz # optional
 
 run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think -- see parallelize directory
 ```
-python pca_gene_resample.py --neval 1 --nsamp 20 --dir eig
+python pca_gene_resample.py --neval 1 --nsamp 20 --outdir eig
 ```
 run the script to get gene expression trajectories
 ```

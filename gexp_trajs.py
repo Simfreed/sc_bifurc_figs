@@ -12,7 +12,7 @@ import pickle as pkl
 headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
 figdir     = '{0}/figs'.format(headdir)
 datdir     = '{0}/neutrophil_data'.format(headdir)
-eigdir     = '{0}/eig'.format(datdir)
+eigdir     = '{0}/eig_ncell_sample'.format(datdir)
 
 gexp_fname = '{0}/gene_expr.npz'.format(datdir)
 pst_fname  = '{0}/pseudotime.txt'.format(datdir)
@@ -30,9 +30,9 @@ gexp_lil   = gexp_sp.tolil() # WT: 3 min 55 seconds
 
 print('loading cluster labels and SPRING positions')
 dtp      = np.dtype([('Library Cell', np.unicode_, 16),('barcode', np.unicode_, 20),
-              ('Time point', np.int),('Starting population', np.unicode_, 20),
+              ('Time point', int),('Starting population', np.unicode_, 20),
                ('Cell type annotation', np.unicode_, 60),
-               ('Well', np.int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
+               ('Well', int), ('SPRING-x', np.float64), ('SPRING-y', np.float64)])
 
 metadata = np.genfromtxt(meta_fname, delimiter='\t',skip_header=1, dtype=dtp)
 

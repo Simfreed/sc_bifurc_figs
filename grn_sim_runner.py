@@ -27,6 +27,10 @@ parser.add_argument("--tau_range",  type=float, help="tau = 1/kd range for pitch
 parser.add_argument("--m1",         type=float, help="m1 for pitchfork bifurc",                 default=1)
 parser.add_argument("--m2_pf",      type=float, help="m2 for pf bifurc",                        default=1)
 
+parser.add_argument("--run_sc",     dest='run_sc', action='store_true') # vary the scale
+parser.add_argument("--sc_arr",     type=float, help="noise",   default=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000],  nargs = '+') 
+#parser.add_argument("--sc_range",   type=float, help="noise",   default=[1,2,5,10,20,50,100,200,500,1000],  nargs = '+') 
+
 parser.add_argument("--init",      type=str,   help="""initial g pos; can be ['rand', 
         'min' (exact solution -- smallest if >1), 
         'max' (exact solution -- largest if >1)]. """,                                          default='rand') 
@@ -58,23 +62,32 @@ ngenes     = ndriv + nresp
 
 taus_var = np.arange(*args.tau_range)
 m1s_var  = np.arange(*args.m1_range)
+sc_var   = np.array(args.sc_arr)
 
 if args.run_pf:
-    taus = taus_var
-    m1s  = args.m1*np.ones(taus.shape[0])
-    m2   = args.m2_pf
+    taus   = taus_var
+    m1s    = args.m1*np.ones(taus.shape[0])
+    m2     = args.m2_pf
+    scales = args.scale*np.ones(taus.shape[0])
+    bvars  = taus
+
+elif args.run_sc:
+    scales = sc_var
+    taus   = args.tau * np.ones(scales.shape[0])
+    m1s    = args.m1  * np.ones(scales.shape[0])
+    m2     = args.m2 
+    bvars  = scales
+
 else:
-    m1s = m1s_var
-    m2  = args.m2
-    taus = args.tau * np.ones(m1s.shape[0])
+    m1s    = m1s_var
+    m2     = args.m2
+    taus   = args.tau * np.ones(m1s.shape[0])
+    scales = args.scale * np.ones(m1s.shape[0])
+    bvars  = m1s
 
-nb_var = taus.shape[0]
-
+nb_var = bvars.shape[0]
 
 # directory setup
-init = 'rand'
-
-
 driv_traj   = np.zeros((nb_var, int(np.ceil(tmax/dt_save)), ndriv, nc_save))
 resp_traj   = np.zeros((nb_var, int(np.ceil(tmax/dt_save)), nresp, nc_save))
 
@@ -83,10 +96,10 @@ resp_final  = np.zeros((nb_var, nresp, nc_save))
 
 
 for i in range(nb_var):
-    print(r'tau = {0:.2f}; m1 = {1:.2f}'.format(taus[i],m1s[i]))
+    print(r'tau = {0:.2f}; m1 = {1:.2f}; noise scale = {2:.2f}'.format(taus[i], m1s[i], scales[i]))
     _,utraj,vtraj, u, v  = sim.langevin(m1s[i],m2, hill, hill, taus[i],
                                drv_idxs, alphas, betas, ks, hs, vtaus,
-                               scale, ncell, dt, tmax, nc_save, dt_save, args.g_range, args.init)
+                               scales[i], ncell, dt, tmax, nc_save, dt_save, args.g_range, args.init)
 
     driv_traj[i]  = utraj
     resp_traj[i]  = vtraj
@@ -99,7 +112,6 @@ os.makedirs(args.dir, exist_ok=True)
 gexp       = np.hstack([driv_final, resp_final]).transpose((0,2,1))
 nt, nc, ng = gexp.shape
 gexp_flat  = sp.coo_matrix(gexp.reshape((nt*nc, ng)))
-bvars      = taus if args.run_pf else m1s
 pst_mat    = np.vstack([np.arange(nt*nc), np.repeat(bvars, nc)]).T
 
 # to run eigenvalue code
@@ -108,14 +120,17 @@ np.savetxt('{0}/pseudotime.txt'.format(args.dir), pst_mat, fmt=["%d","%.1f"], de
 
 # to inspect the simulation
 np.save('{0}/gexp.npy'.format(      args.dir),  gexp)
+np.save('{0}/bvars.npy'.format(     args.dir),  bvars)
 np.save('{0}/taus.npy'.format(      args.dir),  taus)
 np.save('{0}/m1s.npy'.format(       args.dir),  m1s)
-np.save('{0}/bvars.npy'.format(     args.dir),  bvars)
+np.save('{0}/scales.npy'.format(    args.dir),  scales)
+
 np.save('{0}/alphas.npy'.format(    args.dir),  alphas)
 np.save('{0}/betas.npy'.format(     args.dir),  betas)
 np.save('{0}/ks.npy'.format(        args.dir),  ks)
 np.save('{0}/driv_idxs.npy'.format( args.dir),  drv_idxs)
 np.save('{0}/vtaus.npy'.format(     args.dir),  vtaus)
+
 np.save('{0}/dtraj.npy'.format(     args.dir),  driv_traj)
 np.save('{0}/rtraj.npy'.format(     args.dir),  resp_traj)
 
