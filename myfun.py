@@ -260,9 +260,10 @@ def maxabs(a, axis=None):
     out[n] = mina[n]
     return out
 
-def get_bins(srt, bin_sz, overlap):
-    last_full_bin     = int(np.floor(srt.shape[0]/overlap)*overlap) - bin_sz + overlap
-    pst_bins          = [srt[i:(i+bin_sz)] for i in range(0,last_full_bin,overlap)]
-    pst_bins[-1]      = np.union1d(pst_bins[-1], srt[last_full_bin:])
-    return [np.sort(x) for x in pst_bins]
-
+def get_bins(arr, bin_sz, overlap):
+    inc = bin_sz-overlap
+    nbins = int(np.floor(len(arr)/inc))
+    first_bins = [arr[i*inc:i*inc+bin_sz] for i in range(nbins-1)]
+    last_bin   = arr[(nbins-1)*inc:len(arr)]
+    bins       = first_bins + [last_bin]
+    return [np.sort(x) for x in bins]
