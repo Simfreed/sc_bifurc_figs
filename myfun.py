@@ -261,9 +261,23 @@ def maxabs(a, axis=None):
     return out
 
 def get_bins(arr, bin_sz, overlap):
-    inc = bin_sz-overlap
-    nbins = int(np.floor(len(arr)/inc))
+    inc        = bin_sz-overlap
+    nbins      = int(np.floor(len(arr)/inc))
     first_bins = [arr[i*inc:i*inc+bin_sz] for i in range(nbins-1)]
     last_bin   = arr[(nbins-1)*inc:len(arr)]
     bins       = first_bins + [last_bin]
     return [np.sort(x) for x in bins]
+
+def get_bin_idxs(tau, bin_sz, overlap_frac):
+    return get_bins(np.argsort(tau), bin_sz, int(overlap_frac*bin_sz))
+
+def get_time_bin_idxs(tau, avg_bin_sz, overlap_frac): #, eps_frac = 1e-2, bin_width = -1):
+
+    min_tau    = np.amin(tau)
+    max_tau    = np.amax(tau)
+    T          = max_tau - min_tau
+    w          = T * avg_bin_sz / len(tau)
+    inc        = w*(1-overlap_frac)
+    bin_left   = np.arange(min_tau, max_tau, inc)
+    bin_right  = bin_left + w
+    return [np.where((tau>=bin_left[i])&(tau<bin_right[i]))[0] for i in range(len(bin_left))]
