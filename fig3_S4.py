@@ -218,28 +218,28 @@ gexp_mu_sort2 = np.vstack([mf.norm0to1(gexp_mut[[0]],1),
 ######### the figure ################################
 #######################################################
 plt.style.reload_library()
-plt.style.use('one_col_fig.mplstyle')
+plt.style.use('one_col_fig_6.mplstyle')
 
 wfrac, hfrac = 4,4
 marg_ht = 1
-leg_ht  = 0.5
-leg_spc = 1
+leg_ht  = 0.75
+leg_spc = 1.25
 a_end   = 1
-ab_spc  = 1.25
-b_ht    = 3.25
-bd_spc  = 2.75
-dht     = 3
-eht     = 4
-fht     = 4
+ab_spc  = 1.75
+b_ht    = 4
+bd_spc  = 3.25
+dht     = 4
+eht     = 4.5
+fht     = 4.5
 de_spc  = 1
-ght     = 5
-fg_spc  = 3.25
-leg_spc2 = 0.75
+ght     = 7
+fg_spc  = 3.75
+leg_spc2 = 1.25
 
-marg_wd = 2.5
-col1_wd = 4
-ac_spc  = 3
-col2_wd = 3
+marg_wd = 5
+col1_wd = 7
+ac_spc  = 4.5
+col2_wd = 5.5
 legspc_wd = 0.75
 leg_wd = 0.5
 
@@ -285,7 +285,7 @@ cs = np.cumsum(wds) # starting cols
 nr = np.sum(hts)
 nc = np.sum(wds)
 
-wid = 8.7/2.54
+wid = 8.6/2.54
 ht  = wid*nr/nc
 
 
@@ -315,11 +315,11 @@ caps = [
 ri = [rs[0],rs[4],rs[0],rs[6],rs[8],rs[10],rs[12],rs[12]]
 ci = [0,    0,    cs[1],0,    0,    0,     0,     cs[1]]
 xs = [0,    0,    5,    0,    0,    0,     0,     4]
-ys = [0,   -1,    0,   -2,    1.5,  0,     0,     0]
+ys = [0,   -1,    0,   -2,    -2,   -2,    0,     0]
 
 for i in range(len(caps)):
     cap_ax=plt.subplot(gs[ri[i]:ri[i]+1,ci[i]:ci[i]+1])
-    cap_ax.text(s=caps[i], x=xs[i], y=ys[i],fontsize=14, fontweight='bold')
+    cap_ax.text(s=caps[i], x=xs[i], y=ys[i],fontsize=11, fontweight='bold')
     cap_ax.axis('off')
 
 #####################################
@@ -361,7 +361,8 @@ for i in range(len(ar0)):
 for i in range(5):
     axA.add_patch(plt.Circle((xs[i], ys[i]), radius=0.17,clip_on=False,facecolor=fcs[i],edgecolor='black',alpha=1
                            ,zorder=1))
-    axA.text(s=caps[i],x=xs[i],y=ys[i],verticalalignment='center',horizontalalignment='center',clip_on=False)
+    axA.text(s=caps[i],x=xs[i],y=ys[i],verticalalignment='center',horizontalalignment='center',clip_on=False,
+            fontsize=6)
 
 axA.axis('off')
 
@@ -378,7 +379,7 @@ for i in range(len(traj_m1)):
     
 #axB.set_yscale('symlog')
 
-leg = axB.legend(loc=(0.25,0.45),labelspacing=0,handletextpad=0.5,
+leg = axB.legend(loc=(0.2,0.35),labelspacing=0,handletextpad=0.5,
                  handlelength=0,frameon=False, borderpad=0, labelcolor=cols, markerscale=0)
 
 
@@ -424,7 +425,7 @@ axD.set_xlim(*taulims)
 axD.errorbar(m1s, null_eval_mu[:,0], yerr = null_eval_err[:,0], color=cols[1],
              capsize=2,alpha=0.5, 
              label='shuffled expr.\n'+r'($\omega_1^{\rm null}$)')
-leg = axD.legend(loc = (0.05,0.35),labelspacing=0,frameon=False,ncol=2,columnspacing=3.5,
+leg = axD.legend(loc = (0.05,0.3),labelspacing=0,frameon=False,ncol=2,columnspacing=8,
                  handlelength=0.5,handletextpad=0.2)
 for i,text in zip(range(len(cols)),leg.get_texts()):
     plt.setp(text, color = cols[i])
@@ -438,9 +439,9 @@ cmap.set_bad(color='white')
 im=axE.imshow(cos_th_hist_masked,aspect='auto',cmap=cmap)#, origin='upper')
 axE.set_ylabel('cov. eigenvec.\nprojection',labelpad=2, linespacing=lspace)
 mulens = r'\setlength{\thickmuskip}{-1mu}\setlength{\thinmuskip}{0mu}\setlength{\medmuskip}{0mu}'
-axE.text(s=mulens+r'$\hat{g}(m_1)\cdot \vec{s}_1({m_1}_c)$',x=0.63,y=0.5,transform=axE.transAxes, fontsize=8, horizontalalignment='left')
+axE.text(s=mulens+r'$\hat{g}(m_1)\cdot \vec{s}_1({m_1}_c)$',x=0.68,y=0.7,transform=axE.transAxes, fontsize=6, horizontalalignment='left')
 axE.set_yticks(np.arange(cos_th_hist.shape[0]))
-axE.set_yticklabels(['{0:.1f}'.format(cos_th_bin_ctrs[i]) if i%2==0 else ''
+axE.set_yticklabels(['{0:.1f}'.format(cos_th_bin_ctrs[i]) if i%4==0 else ''
                       for i in range(len(cos_th_bin_ctrs)-1,-1,-1)])
 axE.set_xticklabels([])
 axE.axvline(bif_idxs[0],color='k', linestyle = '--', alpha=0.5)
@@ -468,7 +469,7 @@ axF1.set_xlim(*taulims)
 axF1.set_xlabel(bifvarlab)
 axF1.set_xlabel('control parameter ({0})'.format(bifvarlab))
 axF1.axvline(m1s[bif_idxs[0]],color='k', linestyle = '--', alpha=0.5)
-leg = axF1.legend(loc=(0.17,0),frameon=False,handlelength=1,handletextpad=0.5)
+leg = axF1.legend(loc=(0.25,0),frameon=False,handlelength=1,handletextpad=0.5)
 for text in leg.get_texts():
     text.set_color(axcols[0])
 
@@ -480,7 +481,7 @@ axF2.tick_params(axis='y', labelcolor=axcols[1])
 axF2.spines['left'].set_color(axcols[0])
 axF2.spines['right'].set_color(axcols[1])
 axF2.set_yticks([0.1,0.3,0.5,0.7,0.9])
-leg = axF2.legend(loc=(0.55,0.76),frameon=False,handlelength=1,handletextpad=0.5)
+leg = axF2.legend(loc=(0.55,0.74),frameon=False,handlelength=1,handletextpad=0.5)
 for text in leg.get_texts():
     text.set_color(axcols[1])
 
@@ -517,7 +518,7 @@ for i in range(len(m1_ii)):
     axH.plot(alphas[asrt],corrsxy[2][m1_ii[i]],'o',color=cols[i],
              label = bifvarlab+r'$={0:.0f}$'.format(m1s[m1_ii[i]]))
 
-leg = axH.legend(loc=(-0.1,0.65),labelspacing=0,handletextpad=-0.8,
+leg = axH.legend(loc=(-0.05,0.675),labelspacing=0,handletextpad=-0.8,
                  frameon=False, labelcolor=cols)
 
 axH.set_xlabel(r'response coupling ($\alpha_i$)')
