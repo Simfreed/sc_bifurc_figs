@@ -1,7 +1,7 @@
 # sc_bifurc_figs
 
 This is a repo for remaking all the figures in the paper [A dynamical systems treatment of transcriptomic trajectories in hematopoiesis](https://www.biorxiv.org/content/10.1101/2021.05.03.442465v2). 
-While the instructions are specific to reproducing the results in the paper, many of the scripts are generic and can be applied to one's own data as well. 
+While the instructions are specific to reproducing the results in the paper, many of the scripts are generic and can be easily applied to other datasets. 
 
 ## Minimal Requirements ##
 - Latex
