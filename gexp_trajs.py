@@ -12,7 +12,8 @@ import pickle as pkl
 headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
 figdir     = '{0}/figs'.format(headdir)
 datdir     = '{0}/neutrophil_data'.format(headdir)
-eigdir     = '{0}/eig_ncell_sample'.format(datdir)
+eigdir     = '{0}/eig'.format(datdir)
+#eigdir     = '{0}/eig_ncell_sample'.format(datdir)
 
 gexp_fname = '{0}/gene_expr.npz'.format(datdir)
 pst_fname  = '{0}/pseudotime.txt'.format(datdir)
