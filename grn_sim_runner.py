@@ -23,7 +23,7 @@ parser.add_argument("--m2",         type=float, help="m2 for transcritical bifur
 parser.add_argument("--tau",        type=float, help="tau = 1/kd for transcritical bifurc",     default=1)
 
 parser.add_argument("--run_pf",     dest='run_pf', action='store_true') # otherwise does the transcritical
-parser.add_argument("--tau_range",  type=float, help="tau = 1/kd range for pitchfork bifurc",   default=[0.2,4.2,0.2],  nargs = 3 ) 
+parser.add_argument("--tau_range",  type=float, help="tau = 1/kd range for pitchfork bifurc",   default=[2,4.2,0.2],  nargs = 3 ) 
 parser.add_argument("--m1",         type=float, help="m1 for pitchfork bifurc",                 default=1)
 parser.add_argument("--m2_pf",      type=float, help="m2 for pf bifurc",                        default=1)
 
