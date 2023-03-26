@@ -300,6 +300,6 @@ leg._legend_box.sep = 0.1
 # axC.text(x=0.17,y=0.25,s= r'$\tau$',transform=axC.transAxes)
 axC.set_ylim(-0.003,50)
 
-plt.savefig('{0}/figS5_neut_cov_supp.pdf'.format(figdir), bbox_inches='tight')
+plt.savefig('{0}/neut_cov_supp.pdf'.format(figdir), bbox_inches='tight')
 
 print('saved figure s5')
