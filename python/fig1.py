@@ -29,9 +29,9 @@ cell_pics = [plt.imread('{0}/{1}.png'.format(pngdir,nm)) for nm in cell_nms]
 #############################
 ###### Bifurcation loading ##
 #############################
-nb_dir = 'no_bifurc'
-sn_dir = 'sn1'
-pf_dir = 'pf_scale20'
+nb_dir = 'out/no_bifurc'
+sn_dir = 'out/sn1'
+pf_dir = 'out/pf_scale20'
 datdirs = [nb_dir, sn_dir, pf_dir]
 bif_vars = [np.load('{0}/bvars.npy'.format(ddir)) for ddir in datdirs]
 gexps    = [np.load('{0}/gexp.npy'.format(ddir)) for ddir in datdirs]
@@ -56,7 +56,7 @@ clust_label_bools = [np.array(cl,dtype='bool') for cl in clust_labels]
 #############################
 ###### The figure ###########
 #############################
-plt.style.use('./one_col_fig.mplstyle')
+plt.style.use('./sty/one_col_fig.mplstyle')
 
 frac = 2
 
