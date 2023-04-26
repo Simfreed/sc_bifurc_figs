@@ -21,9 +21,9 @@ If not using anaconda, consult environment.yml for package info.
 
 ## fig 1 ##
 ```
-python python/grn_sim_runner.py --dir no_bifurc --nresp 0 --hill 1 --scale 200
-python python/grn_sim_runner.py --dir sn1
-python python/grn_sim_runner.py --dir pf_scale20 --nresp 0 --run_pf
+python python/grn_sim_runner.py --dir out/no_bifurc --nresp 0 --hill 1 --scale 200
+python python/grn_sim_runner.py --dir out/sn1
+python python/grn_sim_runner.py --dir out/pf_scale20 --nresp 0 --run_pf
 python python/fig1.py
 ```
 ## fig S1 ##
@@ -36,7 +36,7 @@ ipynb/model_v_data.ipynb
 ## fig 2, S3, S4 -- toy model saddle node ##
 outputs: saddle_node.pdf (2), resample.pdf (S3), saddle_node_slingshot (S4)
 ```
-python python/grn_sim_runner.py --dt_save 0.1 --m1_range 2 5 1 --dir tc_traj
+python python/grn_sim_runner.py --dt_save 0.1 --m1_range 2 5 1 --dir out/tc_traj
 Rscript R/run_slinshot_sim.R
 ```
 run the notebook
@@ -84,7 +84,7 @@ rm -r neutrophil_data/gene_expr.mtx.gz # optional
 ```
 run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think -- see parallelize directory
 ```
-python python/pca_gene_resample.py --neval 1 --nsamp 20 --outdir eig
+python python/pca_gene_resample.py --neval 1 --nsamp 20 --outdir out/eig
 ```
 run the script to get gene expression trajectories
 ```
