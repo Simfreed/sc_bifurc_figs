@@ -21,10 +21,10 @@ If not using anaconda, consult environment.yml for package info.
 
 ## fig 1 ##
 ```
-python grn_sim_runner.py --dir no_bifurc --nresp 0 --hill 1 --scale 200
-python grn_sim_runner.py --dir sn1
-python grn_sim_runner.py --dir pf_scale20 --nresp 0 --run_pf
-python fig1.py
+python python/grn_sim_runner.py --dir no_bifurc --nresp 0 --hill 1 --scale 200
+python python/grn_sim_runner.py --dir sn1
+python python/grn_sim_runner.py --dir pf_scale20 --nresp 0 --run_pf
+python python/fig1.py
 ```
 ## fig S1 ##
 output: model_v_data.pdf
@@ -36,7 +36,7 @@ ipynb/model_v_data.ipynb
 ## fig 2, S3, S4 -- toy model saddle node ##
 outputs: saddle_node.pdf (2), resample.pdf (S3), saddle_node_slingshot (S4)
 ```
-python grn_sim_runner.py --dt_save 0.1 --m1_range 2 5 1 --dir tc_traj
+python python/grn_sim_runner.py --dt_save 0.1 --m1_range 2 5 1 --dir tc_traj
 Rscript R/run_slinshot_sim.R
 ```
 run the notebook
@@ -47,7 +47,7 @@ ipynb/saddle_node.ipynb:
 ## fig S2 -- toy model phase planes##
 output: xxx.pdf
 ```
-python phase_planes.py
+python python/phase_planes.py
 ```
 ## fig S5 -- toy pitchfork ##
 run the notebook:
@@ -79,16 +79,16 @@ bash download_neutrophil_data.sh
 ```
 the gene expression matrix loads a lot (~3x) faster as an npz file than an mtx file, so convert it, since we have to read it a few times
 ```
-python convert_gene_expr.py
+python python/convert_gene_expr.py
 rm -r neutrophil_data/gene_expr.mtx.gz # optional
 ```
 run the eigenvalue decomposition for the data and nulls -- this takes a few hours I think -- see parallelize directory
 ```
-python pca_gene_resample.py --neval 1 --nsamp 20 --outdir eig
+python python/pca_gene_resample.py --neval 1 --nsamp 20 --outdir eig
 ```
 run the script to get gene expression trajectories
 ```
-python gexp_trajs.py
+python python/gexp_trajs.py
 ```
 
 run the notebook 
@@ -98,9 +98,9 @@ ipynb/neutrophil.ipynb
 
 ## Fig S9 -- distributional properties of neutrophil trajectory ##
 ```
-python pca_ncell_sampling.py // ~ 1 hr
-python pca_bin_width.py // ~ 0.5 hr
-python neut_cov_distr.py
+python python/pca_ncell_sampling.py // ~ 1 hr
+python python/pca_bin_width.py // ~ 0.5 hr
+python python/neut_cov_distr.py
 ```
 
 ## Fig S11 -- slingshot on neutrophil ##
