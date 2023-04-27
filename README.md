@@ -44,7 +44,7 @@ ipynb/saddle_node.ipynb:
 ```
 
 ## fig S2 -- toy model phase planes##
-output: xxx.pdf
+output: figS2_dyn_syss.pdf
 ```
 python python/phase_planes.py
 ```

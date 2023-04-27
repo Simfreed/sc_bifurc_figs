@@ -39,7 +39,7 @@ pf_s_tau  = np.array([pf_tau[i] for i in range(pf_tau.shape[0]) if pf_g1[i].shap
 
 #### the figure ####
 ### plt.style.reload_library()
-plt.style.use('one_col_fig.mplstyle')
+plt.style.use('sty/one_col_fig.mplstyle')
 # nr = 90
 # nc = 45
 
@@ -246,4 +246,4 @@ axD.set_xlabel(r'$1/k_D$')
 
 figdir = 'figs'
 os.makedirs(figdir, exist_ok=True)
-plt.savefig('{0}/figS1_dyn_syss.pdf'.format(figdir), bbox_inches='tight')
+plt.savefig('{0}/figS2_dyn_syss.pdf'.format(figdir), bbox_inches='tight')
