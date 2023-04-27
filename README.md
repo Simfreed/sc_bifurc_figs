@@ -37,7 +37,6 @@ ipynb/model_v_data.ipynb
 outputs: saddle_node.pdf (2), resample.pdf (S3), saddle_node_slingshot (S4)
 ```
 python python/grn_sim_runner.py --dt_save 0.1 --m1_range 2 5 1 --dir out/tc_traj
-Rscript R/run_slingshot_sim.R
 ```
 run the notebook
 ```
