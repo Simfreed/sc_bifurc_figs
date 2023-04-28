@@ -69,12 +69,15 @@ python python/unequilib_fig.py
 ```
 
 ## Fig S8 -- Small Errors##
+run the notebook
+```
 ipynb/small_errors.ipynb
+```
 
 ## Fig 3,4,S9 ##
 download neutrophil files from Klein
 ```
-bash download_neutrophil_data.sh
+bash download_neutrophil_files.sh
 ```
 the gene expression matrix loads a lot (~3x) faster as an npz file than an mtx file, so convert it, since we have to read it a few times
 ```
