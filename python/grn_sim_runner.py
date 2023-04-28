@@ -28,7 +28,7 @@ parser.add_argument("--m1",         type=float, help="m1 for pitchfork bifurc", 
 parser.add_argument("--m2_pf",      type=float, help="m2 for pf bifurc",                        default=1)
 
 parser.add_argument("--run_sc",     dest='run_sc', action='store_true') # vary the scale
-parser.add_argument("--sc_arr",     type=float, help="noise",   default=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000],  nargs = '+') 
+parser.add_argument("--sc_arr",     type=float, help="noise",   default=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000],  nargs = '+')
 #parser.add_argument("--sc_range",   type=float, help="noise",   default=[1,2,5,10,20,50,100,200,500,1000],  nargs = '+') 
 
 parser.add_argument("--init",      type=str,   help="""initial g pos; can be ['rand', 
