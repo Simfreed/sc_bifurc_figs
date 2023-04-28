@@ -53,7 +53,7 @@ run the notebook:
 ```
 ipynb/pitchfork.ipynb
 ```
-output: xxx.pdf
+output: figS5_pitchfork.pdf
 
 ## fig S6 -- noise induced transition##
 run the notebook 
@@ -63,9 +63,9 @@ ipynb/noise_induced.ipynb
 output:
 
 ## fig S7 -- unequilibrated saddle node##
-run the notebook
 ```
-ipynb/unequilibrated.ipynb
+python python/grn_sim_runner.py --tmax 5 --dir out/sn_tmax5
+python python/unequilib_fig.py
 ```
 
 ## Fig S8 -- Small Errors##
