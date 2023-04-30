@@ -99,7 +99,7 @@ run the notebook
 ipynb/neutrophil.ipynb
 ```
 
-## Fig S9 -- distributional properties of neutrophil trajectory ##
+## Fig S10 -- distributional properties of neutrophil trajectory ##
 ```
 python python/pca_ncell_sampling.py // ~ 1 hr
 python python/pca_bin_width.py // ~ 0.5 hr
@@ -111,7 +111,7 @@ python python/neut_cov_distr.py
 ## Fig 5, S12, S13 -- eigenvector and associated calculations ##
 run the notebook 
 ```
-ipynb/evec_fig.ipynb
+ipynb/evec_figs.ipynb
 ```
 outputs: 
 - Fig 5 
