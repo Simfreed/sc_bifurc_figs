@@ -69,7 +69,11 @@ python python/unequilib_fig.py
 ```
 
 ## Fig S8 -- Small Errors##
+run the notebook 
+```
 ipynb/small_errors.ipynb
+```
+output: figS8_small_errors.pdf
 
 ## Fig 3,4,S9 ##
 download neutrophil files from Klein
