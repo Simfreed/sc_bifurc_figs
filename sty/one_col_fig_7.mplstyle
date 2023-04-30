@@ -1,0 +1,14 @@
+axes.titlesize :7
+axes.labelsize : 7
+lines.linewidth : 1 
+lines.markersize : 2 
+xtick.labelsize : 7
+ytick.labelsize : 7
+legend.fontsize :7
+
+xtick.major.pad:1
+xtick.minor.pad:0.9
+ytick.major.pad:1
+ytick.minor.pad:0.9
+axes.labelpad : 0 
+axes.titlepad : 2
