@@ -56,11 +56,6 @@ ipynb/pitchfork.ipynb
 output: figS5_pitchfork.pdf
 
 ## fig S6 -- noise induced transition##
-run the notebook 
-```
-ipynb/noise_induced.ipynb
-```
-output:
 
 ## fig S7 -- unequilibrated saddle node##
 ```

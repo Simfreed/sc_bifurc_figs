@@ -38,7 +38,7 @@ rc('text',usetex=False)
 headdir    = '.' #'/Users/simonfreedman/cqub/bifurc/weinreb_2020/'
 figdir     = '{0}/figs'.format(headdir)
 datdir     = '{0}/neutrophil_data'.format(headdir)
-eigdir     = '{0}/eig'.format(datdir)
+eigdir     = '{0}/out/eig'.format(datdir)
 ncelldir   = '{0}/eigs_ncell_sample'.format(datdir)
 
 gexp_fname = '{0}/gene_expr.npz'.format(datdir)
@@ -160,14 +160,14 @@ for t in range(nts):
 log_hists_ga = np.sum(log_hists_g,axis=1)
 
 ######################################################
-# In[302]: fig S5 ####################################
+# In[302]: fig S10 ####################################
 ######################################################
 
-print('generating figure s5')
+print('generating figure S10')
 
 
 plt.style.reload_library()
-plt.style.use('one_col_fig.mplstyle')
+plt.style.use('sty/one_col_fig.mplstyle')
 
 tseries_ht = 8
 spc_ht  = 5
@@ -293,13 +293,13 @@ axC.set_xlabel('gene expression per cell')
 axC.set_ylabel(r'$\langle$# genes$\rangle_{\rm cell}$')
 leg= axC.legend(loc=(0.17,0.05),labelspacing=0, ncol=2,handletextpad=0.05,frameon=False,columnspacing=0,
                 title=r'$\tau$')
-for hand in leg.legendHandles:
-    hand._legmarker.set_markersize(4)
+#for hand in leg.legendHandles:
+#    hand._marker.set_markersize(4)
 
-leg._legend_box.sep = 0.1
+#leg._legend_box.sep = 0.1
 # axC.text(x=0.17,y=0.25,s= r'$\tau$',transform=axC.transAxes)
 axC.set_ylim(-0.003,50)
 
-plt.savefig('{0}/neut_cov_supp.pdf'.format(figdir), bbox_inches='tight')
+plt.savefig('{0}/figS10_neut_distr.pdf'.format(figdir), bbox_inches='tight')
 
-print('saved figure s5')
+print('saved figure S10')
